@@ -8,17 +8,26 @@ namespace Mydx
 	typedef class Hardware
 	{
 	public:
-		inline static Hardware* const GetInstance() { if (mInstance == nullptr) mInstance = new Hardware(); return mInstance; }
+		inline static Hardware* const GetInstance(HWND hwnd = nullptr, HINSTANCE hInstance = nullptr)
+		{
+			if (mInstance == nullptr)
+				mInstance = new Hardware(hwnd, hInstance);
+			return mInstance;
+		}
+
 		inline static ID3D11Device* const GetDevice()
 		{
-			if (mInstance->mDevice == nullptr)
-				mInstance->generateDeviceAndSwapChain();
-
 			return mInstance->mDevice.Get();
-
 		}
-		Hardware();
+
+		inline static ID3D11DeviceContext* const GetContext() { return mInstance->mContext.Get(); }
+		inline static IDXGISwapChain* const GetSwapChain() { return mInstance->mSwapChain.Get(); }
+
+		Hardware(HWND hwnd, HINSTANCE hInstance);
 		~Hardware();
+
+		inline unsigned int GetWidth() const { return mInstance->mWidth; }
+		inline unsigned int GetHeight() const { return mInstance->mHeight; }
 
 	private:
 
@@ -33,8 +42,8 @@ namespace Mydx
 		HWND mWindow;
 		HINSTANCE mHandle;
 
-		unsigned int mWidth;
-		unsigned int mHeight;
+		unsigned int mWidth = 800;
+		unsigned int mHeight = 600;
 	} HW;
 
 }

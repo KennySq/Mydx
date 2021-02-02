@@ -3,12 +3,11 @@
 
 namespace Mydx
 {
-
-
 	Hardware* Hardware::mInstance = nullptr;
-
-	Hardware::Hardware()
-	{}
+	Hardware::Hardware(HWND hwnd, HINSTANCE hInstance) : mWindow(hwnd), mHandle(hInstance), mWidth(800), mHeight(600)
+	{
+		generateDeviceAndSwapChain();
+	}
 
 	Hardware::~Hardware()
 	{}
@@ -46,7 +45,6 @@ namespace Mydx
 													nullptr, 0, D3D11_SDK_VERSION, &swapChainDesc,
 													mSwapChain.GetAddressOf(), mDevice.GetAddressOf(),
 													featureLevel, mContext.GetAddressOf());
-
 
 		assert(result == S_OK);
 		return true;
