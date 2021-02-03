@@ -6,6 +6,9 @@ namespace Mydx
 {
 	bool Texture2D::Generate()
 	{
+		if (mTexture != nullptr)
+			return false;
+
 		ID3D11Device* device = HW::GetDevice();
 		
 		auto result = device->CreateTexture2D(&mTextureDesc, nullptr, mTexture.GetAddressOf());
@@ -103,6 +106,9 @@ namespace Mydx
 
 	bool SwapChainTexture2D::Generate()
 	{
+		if (mTexture != nullptr)
+			return false;
+
 		ID3D11Device* device = HW::GetDevice();
 		IDXGISwapChain* swapchain = HW::GetSwapChain();
 
