@@ -5,4 +5,5 @@
 
 #include"Hardware.h"
 
+#include"Shader.h"
 #include"Texture2D.h"
