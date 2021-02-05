@@ -57,7 +57,7 @@ bool Pass::compile()
 	compileFlag |= D3DCOMPILE_DEBUG;
 #endif
 
-	if (mFlag & eVertex)
+	if (mFlag & VERTEX)
 	{
 		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "vs_5_0", compileFlag, 0, &VBlob, &ErrBlob);
 		assert(result == S_OK);
@@ -76,7 +76,7 @@ bool Pass::compile()
 			return false;
 	}
 
-	if (mFlag & eGeometry)
+	if (mFlag & GEOMETRY)
 	{
 		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "gs_5_0", compileFlag, 0, &GBlob, &ErrBlob);
 		assert(result == S_OK);
@@ -91,7 +91,7 @@ bool Pass::compile()
 			return false;
 	}
 
-	if (mFlag & eDomain)
+	if (mFlag & DMAIN)
 	{
 		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "ds_5_0", compileFlag, 0, &DBlob, &ErrBlob);
 		assert(result == S_OK);
@@ -106,7 +106,7 @@ bool Pass::compile()
 			return false;
 	}
 
-	if (mFlag & eHull)
+	if (mFlag & HULL)
 	{
 		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "hs_5_0", compileFlag, 0, &HBlob, &ErrBlob);
 		assert(result == S_OK);
@@ -121,7 +121,7 @@ bool Pass::compile()
 			return false;
 	}
 
-	if (mFlag & ePixel)
+	if (mFlag & PIXEL)
 	{
 		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "ds_5_0", compileFlag, 0, &PBlob, &ErrBlob);
 		assert(result == S_OK);

@@ -1,6 +1,7 @@
 #pragma once
 
 #include"IMemory.h"
+#include"ePassType.h"
 
 using namespace Microsoft::WRL;
 using namespace Mydx;
@@ -8,15 +9,6 @@ using namespace Mydx;
 namespace Mydx
 {
 	constexpr int REGISTER_CAPACITY = 8;
-
-	enum PASS_TYPE
-	{
-		eVertex = 1,
-		eGeometry = 2,
-		eDomain = 4,
-		eHull = 8,
-		ePixel = 16,
-	};
 
 	struct Pass : IMemory
 	{
@@ -64,7 +56,6 @@ namespace Mydx
 		bool bCompiled = false;
 		const char* mPath;
 		const char* mEntry;
-
 
 		ComPtr<ID3D11ComputeShader> mCS;
 		ComPtr<ID3D11Buffer> mConstBuffer[15];
