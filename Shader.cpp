@@ -33,12 +33,11 @@ void Pass::Release()
 
 Pass::Pass(const char* path, const char* entry, unsigned long flag) : mPath(path), mEntry(entry), mFlag(flag)
 {
-
+	Generate();
 }
 
 Pass::~Pass()
 {
-
 }
 
 bool Pass::compile()
@@ -158,7 +157,7 @@ bool Mydx::Pass::reflect(ID3DBlob* vertexBlob, ID3D11InputLayout** pInputLayout,
 	vector<D3D11_INPUT_ELEMENT_DESC> inputElements;
 	D3D11_SIGNATURE_PARAMETER_DESC signParam;
 	pReflection[0]->GetDesc(&shaderDesc);
-	for (int i = 0; i < shaderDesc.InputParameters; i++)
+	for (unsigned int i = 0; i < shaderDesc.InputParameters; i++)
 	{
 		pReflection[0]->GetInputParameterDesc(i, &signParam);
 
@@ -206,7 +205,7 @@ bool Mydx::Pass::reflect(ID3DBlob* vertexBlob, ID3D11InputLayout** pInputLayout,
 		inputElements.push_back(element);
 	}
 
-	result = device->CreateInputLayout(inputElements.data(), inputElements.size(), vertexBlob->GetBufferPointer(), vertexBlob->GetBufferSize(), pInputLayout);
+	result = device->CreateInputLayout(inputElements.data(), inputElements.size(), vertexBlob->GetBufferPointer(), static_cast<unsigned int>(vertexBlob->GetBufferSize()), pInputLayout);
 	assert(result == S_OK);
 
 	if (result != S_OK)

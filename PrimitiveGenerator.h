@@ -1,14 +1,16 @@
 #pragma once
 #include"Vertices.h"
+#include"Mesh.h"
 
 namespace Mydx
 {
-	namespace gen
+	class PrimitiveGenerator
 	{
-		const Mesh& GenerateSphere(float radius, unsigned int sliceCount, unsigned int stackCount);
-		const Mesh& GenerateQuad();
+	public:
+		static const shared_ptr<Mesh> GenerateSphere(float radius, unsigned int sliceCount, unsigned int stackCount);
+		static const Mesh& GenerateQuad();
 
 		template<typename _VertTy>
-		bool GenerateMeshBuffer(std::vector<_VertTy>& vertices, std::vector<UINT>& indices, Mesh& const buffer);
-	}
+		static bool GenerateMeshBuffer(std::vector<_VertTy>& vertices, std::vector<UINT>& indices, Mesh& const buffer);
+	};
 }

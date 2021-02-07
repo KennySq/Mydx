@@ -17,8 +17,16 @@ namespace Mydx
 		virtual bool Generate() override;
 		virtual void Release() override;
 
+		ID3D11VertexShader* const GetVS() { return mVS.Get(); }
+		ID3D11GeometryShader* const GetGS() { return mGS.Get(); }
+		ID3D11DomainShader* const GetDS() { return mDS.Get(); }
+		ID3D11HullShader* const GetHS() { return mHS.Get(); }
+		ID3D11PixelShader* const GetPS() { return mPS.Get(); }
+
 		Pass(const char* path, const char* entry, unsigned long flag);
 		~Pass();
+
+		
 
 	private:
 		const char* mPath;

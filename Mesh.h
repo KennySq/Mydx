@@ -13,6 +13,11 @@ namespace Mydx
 		Mesh(const Mesh& rhs);
 		~Mesh();
 
+		inline ID3D11Buffer** const GetVertexBufferAddressOf() { return mVertexBuffer.GetAddressOf(); }
+		inline ID3D11Buffer** const GetIndexBufferAddressOf() { return mIndexBuffer.GetAddressOf(); }
+
+		friend class PrimitiveGenerator;
+
 	private:
 
 		ComPtr<ID3D11Buffer> mVertexBuffer;
@@ -23,5 +28,6 @@ namespace Mydx
 
 		eMeshType mMeshType;
 		eVertexType mVertexType;
+
 	};
 }

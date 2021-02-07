@@ -13,6 +13,9 @@ namespace Mydx
 
 		void ClearTexture(DirectX::XMVECTORF32 clearColor);
 
+		inline unsigned int GetWidth() const { mTextureDesc.Width; }
+		inline unsigned int GetHeight() const { mTextureDesc.Height; }
+
 		Texture2D(D3D11_TEXTURE2D_DESC& texDesc);
 		~Texture2D();
 	private:
@@ -34,14 +37,15 @@ namespace Mydx
 
 	typedef struct SwapChainTexture2D : IMemory
 	{
-		virtual bool Generate() override;
-		virtual void Release() override;
+
 
 		void ClearTexture(DirectX::XMVECTORF32 clearColor);
 
 		SwapChainTexture2D(D3D11_TEXTURE2D_DESC& texDesc);
 		~SwapChainTexture2D();
 	private:
+		virtual bool Generate() override;
+		virtual void Release() override;
 
 		D3D11_TEXTURE2D_DESC mTextureDesc;
 		D3D11_RENDER_TARGET_VIEW_DESC mRenderTargetDesc;

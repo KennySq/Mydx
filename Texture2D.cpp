@@ -90,7 +90,7 @@ namespace Mydx
 		mRenderTargetDesc.Format = texDesc.Format;
 		mRenderTargetDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 		
-		mDepthStencilDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		mDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		mDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
 		mUnordredAccessDesc.Format = texDesc.Format;
@@ -98,6 +98,8 @@ namespace Mydx
 
 		mShaderResourceDesc.Format = texDesc.Format;
 		mShaderResourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+
+		Generate();
 	}
 
 	Texture2D::~Texture2D()
@@ -192,7 +194,7 @@ namespace Mydx
 		mRenderTargetDesc.Format = texDesc.Format;
 		mRenderTargetDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 
-		mDepthStencilDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+		mDepthStencilDesc.Format = DXGI_FORMAT_R32_TYPELESS;
 		mDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
 		mUnordredAccessDesc.Format = texDesc.Format;
@@ -200,6 +202,10 @@ namespace Mydx
 
 		mShaderResourceDesc.Format = texDesc.Format;
 		mShaderResourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+
+		bool bResult = Generate();
+		assert(bResult == true);
+		
 	}
 
 	SwapChainTexture2D::~SwapChainTexture2D()
