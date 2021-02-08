@@ -13,7 +13,14 @@ void Mydx::Mesh::Release()
 
 Mydx::Mesh::Mesh(eMeshType meshType, eVertexType vertexType) : mMeshType(meshType), mVertexType(vertexType)
 {
-	
+	switch (vertexType)
+	{
+		case eVertexType::STATIC:
+			mStride = sizeof(StaticVertex);
+			break;
+
+	}
+
 }
 
 Mydx::Mesh::Mesh(const Mesh& rhs)
@@ -23,6 +30,9 @@ Mydx::Mesh::Mesh(const Mesh& rhs)
 
 	mVertexCount = rhs.mVertexCount;
 	mIndexCount = rhs.mIndexCount;
+
+	mStride = rhs.mStride;
+	mOffset = rhs.mOffset;
 }
 
 Mydx::Mesh::~Mesh()

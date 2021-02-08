@@ -16,6 +16,11 @@ namespace Mydx
 		inline unsigned int GetWidth() const { mTextureDesc.Width; }
 		inline unsigned int GetHeight() const { mTextureDesc.Height; }
 
+		ID3D11RenderTargetView* GetRenderTarget() const { return mRenderTarget.Get(); }
+		ID3D11ShaderResourceView* GetShaderResource() const { return mShaderResource.Get(); }
+		ID3D11UnorderedAccessView* GetUnorderedAccess() const { return mUnorderedAccess.Get(); }
+		ID3D11DepthStencilView* GetDepthStencil() const { return mDepthStencil.Get(); }
+
 		Texture2D(D3D11_TEXTURE2D_DESC& texDesc);
 		~Texture2D();
 	private:
@@ -43,6 +48,12 @@ namespace Mydx
 
 		SwapChainTexture2D(D3D11_TEXTURE2D_DESC& texDesc);
 		~SwapChainTexture2D();
+
+		ID3D11RenderTargetView* GetRenderTarget() const { return mRenderTarget.Get(); }
+		ID3D11ShaderResourceView* GetShaderResource() const { return mShaderResource.Get(); }
+		ID3D11UnorderedAccessView* GetUnorderedAccess() const { return mUnorderedAccess.Get(); }
+		ID3D11DepthStencilView* GetDepthStencil() const { return mDepthStencil.Get(); }
+
 	private:
 		virtual bool Generate() override;
 		virtual void Release() override;

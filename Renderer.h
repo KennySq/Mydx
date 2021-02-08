@@ -4,9 +4,11 @@
 #include"Shader.h"
 #include"Viewport.h"
 
+
 using namespace DirectX;
 namespace Mydx
 {
+	class Scene;
 	class Renderer2D
 	{
 	public:
@@ -24,6 +26,7 @@ namespace Mydx
 	private:
 		vector<Texture2D*> mTextures;
 		vector<SwapChainTexture2D*> mSwapChainTextures;
+		vector<Viewport*> mViewports;
 
 		Renderer2D(const Renderer2D& rhs) = delete;
 		Renderer2D(IDXGISwapChain* swapChain);
@@ -57,6 +60,8 @@ namespace Mydx
 		Renderer3D(const Renderer3D& rhs) = delete;
 		Renderer3D(ID3D11Device* const device, ID3D11DeviceContext* const context);
 		~Renderer3D() {}
+
+		Scene* mRenderScene = nullptr;
 
 		ID3D11Device* const mDevice;
 		ID3D11DeviceContext* const mContext;

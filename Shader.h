@@ -17,11 +17,18 @@ namespace Mydx
 		virtual bool Generate() override;
 		virtual void Release() override;
 
-		ID3D11VertexShader* const GetVS() { return mVS.Get(); }
-		ID3D11GeometryShader* const GetGS() { return mGS.Get(); }
-		ID3D11DomainShader* const GetDS() { return mDS.Get(); }
-		ID3D11HullShader* const GetHS() { return mHS.Get(); }
-		ID3D11PixelShader* const GetPS() { return mPS.Get(); }
+		ID3D11VertexShader* GetVS() const { return mVS.Get(); }
+		ID3D11GeometryShader* GetGS() const { return mGS.Get(); }
+		ID3D11DomainShader* GetDS()const { return mDS.Get(); }
+		ID3D11HullShader* GetHS() const { return mHS.Get(); }
+		ID3D11PixelShader* GetPS()const { return mPS.Get(); }
+		ID3D11InputLayout* GetIL() const { return mIL.Get(); }
+
+		ID3D11ShaderResourceView* const* GetVertexResources() { return mVertexT; }
+		ID3D11Buffer* const* GetVertexConstBuffers() { return mVertexC; }
+
+		ID3D11ShaderResourceView* const* GetPixelResources() { return mPixelT; }
+		ID3D11Buffer* const* GetPixelConstBuffers() { return mPixelC; }
 
 		Pass(const char* path, const char* entry, unsigned long flag);
 		~Pass();
@@ -43,14 +50,14 @@ namespace Mydx
 
 		// Registers
 		// Vertex
-		ComPtr<ID3D11ShaderResourceView> mVertexT[128];
-		ComPtr<ID3D11Buffer> mVertexC[15];
+		ID3D11ShaderResourceView* mVertexT[128];
+		ID3D11Buffer* mVertexC[15];
 		unsigned int mVTCount = 0;
 		unsigned int mVCCount = 0;
 
 		// Pixel 
-		ComPtr<ID3D11ShaderResourceView> mPixelT[8];
-		ComPtr<ID3D11Buffer> mPixelC[15];
+		ID3D11ShaderResourceView* mPixelT[8];
+		ID3D11Buffer* mPixelC[15];
 		unsigned int mPTCount = 0;
 		unsigned int mPCCount = 0;
 

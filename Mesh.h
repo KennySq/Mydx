@@ -13,8 +13,14 @@ namespace Mydx
 		Mesh(const Mesh& rhs);
 		~Mesh();
 
-		inline ID3D11Buffer** const GetVertexBufferAddressOf() { return mVertexBuffer.GetAddressOf(); }
-		inline ID3D11Buffer** const GetIndexBufferAddressOf() { return mIndexBuffer.GetAddressOf(); }
+		inline ID3D11Buffer* GetVertexBuffer() const { return mVertexBuffer.Get(); }
+		inline ID3D11Buffer* GetIndexBuffer() const { return mIndexBuffer.Get(); }
+
+		inline unsigned int GetStride() const { return mStride; }
+		inline unsigned int GetOffset() const { return mOffset; }
+		inline unsigned int GetVertexCount() const { return mVertexCount; }
+		inline unsigned int GetIndexCount() const { return mIndexCount; }
+		
 
 		friend class PrimitiveGenerator;
 
@@ -22,6 +28,9 @@ namespace Mydx
 
 		ComPtr<ID3D11Buffer> mVertexBuffer;
 		ComPtr<ID3D11Buffer> mIndexBuffer;
+
+		unsigned int mStride;
+		unsigned int mOffset;
 
 		unsigned int mVertexCount = 0;
 		unsigned int mIndexCount = 0;

@@ -11,4 +11,10 @@
 #include"PrimitiveGenerator.h"
 #include"Mesh.h"
 
+#include"Camera.h"
 #include"Renderer.h"
+
+#include"MeshRenderer.h"
+
+
+#include"Instance.h"
