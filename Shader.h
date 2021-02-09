@@ -2,6 +2,7 @@
 
 #include"IMemory.h"
 #include"ePassType.h"
+#include"eRenderType.h"
 
 using namespace Microsoft::WRL;
 using namespace Mydx;
@@ -12,7 +13,7 @@ namespace Mydx
 
 	struct Pass : IMemory
 	{
-
+		
 		// IMemory을(를) 통해 상속됨
 		virtual bool Generate() override;
 		virtual void Release() override;
@@ -30,7 +31,7 @@ namespace Mydx
 		ID3D11ShaderResourceView* const* GetPixelResources() { return mPixelT; }
 		ID3D11Buffer* const* GetPixelConstBuffers() { return mPixelC; }
 
-		Pass(const char* path, const char* entry, unsigned long flag);
+		Pass(const char* path, const char* entry, unsigned long passType);
 		~Pass();
 
 		
@@ -40,6 +41,8 @@ namespace Mydx
 		const char* mEntry;
 		unsigned long mFlag;
 		bool bCompiled = false;
+
+		eRenderType mRenderType;
 
 		ComPtr<ID3D11VertexShader> mVS;
 		ComPtr<ID3D11InputLayout> mIL;

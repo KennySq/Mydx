@@ -31,7 +31,7 @@ void Pass::Release()
 
 }
 
-Pass::Pass(const char* path, const char* entry, unsigned long flag) : mPath(path), mEntry(entry), mFlag(flag)
+Pass::Pass(const char* path, const char* entry, unsigned long passType) : mPath(path), mEntry(entry), mFlag(passType)
 {
 	Generate();
 }
@@ -47,8 +47,8 @@ bool Pass::compile()
 	unsigned long compileFlag = 0;
 
 	HRESULT result = E_INVALIDARG;
-	ID3DBlob* VBlob, * GBlob, * DBlob, * HBlob, * PBlob;
-	ID3DBlob* ErrBlob;
+	ID3DBlob* vBlob, * gBlob, * dBlob, * hBlob, * pBlob;
+	ID3DBlob* errBlob;
 
 	ID3D11Device* device = HW::GetDevice();
 
@@ -58,7 +58,7 @@ bool Pass::compile()
 
 	if (mFlag & VERTEX)
 	{
-		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "vs_5_0", compileFlag, 0, &VBlob, &ErrBlob);
+		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "vs_5_0", compileFlag, 0, &vBlob, &errBlob);
 		assert(result == S_OK);
 
 		if (result != S_OK)
@@ -66,9 +66,9 @@ bool Pass::compile()
 
 		ComPtr<ID3D11ShaderReflection> sr;
 
-		reflect(VBlob, mIL.GetAddressOf(), sr.GetAddressOf());
+		reflect(vBlob, mIL.GetAddressOf(), sr.GetAddressOf());
 
-		result = device->CreateVertexShader(VBlob->GetBufferPointer(), VBlob->GetBufferSize(), nullptr, mVS.GetAddressOf());
+		result = device->CreateVertexShader(vBlob->GetBufferPointer(), vBlob->GetBufferSize(), nullptr, mVS.GetAddressOf());
 		assert(result == S_OK);
 
 		if (result != S_OK)
@@ -77,13 +77,13 @@ bool Pass::compile()
 
 	if (mFlag & GEOMETRY)
 	{
-		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "gs_5_0", compileFlag, 0, &GBlob, &ErrBlob);
+		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "gs_5_0", compileFlag, 0, &gBlob, &errBlob);
 		assert(result == S_OK);
 
 		if (result != S_OK)
 			return false;
 
-		result = device->CreateGeometryShader(GBlob->GetBufferPointer(), GBlob->GetBufferSize(), nullptr, mGS.GetAddressOf());
+		result = device->CreateGeometryShader(gBlob->GetBufferPointer(), gBlob->GetBufferSize(), nullptr, mGS.GetAddressOf());
 		assert(result == S_OK);
 
 		if (result != S_OK)
@@ -92,13 +92,13 @@ bool Pass::compile()
 
 	if (mFlag & DMAIN)
 	{
-		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "ds_5_0", compileFlag, 0, &DBlob, &ErrBlob);
+		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "ds_5_0", compileFlag, 0, &dBlob, &errBlob);
 		assert(result == S_OK);
 
 		if (result != S_OK)
 			return false;
 
-		result = device->CreateDomainShader(DBlob->GetBufferPointer(), DBlob->GetBufferSize(), nullptr, mDS.GetAddressOf());
+		result = device->CreateDomainShader(dBlob->GetBufferPointer(), dBlob->GetBufferSize(), nullptr, mDS.GetAddressOf());
 		assert(result == S_OK);
 
 		if (result != S_OK)
@@ -107,13 +107,13 @@ bool Pass::compile()
 
 	if (mFlag & HULL)
 	{
-		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "hs_5_0", compileFlag, 0, &HBlob, &ErrBlob);
+		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "hs_5_0", compileFlag, 0, &hBlob, &errBlob);
 		assert(result == S_OK);
 
 		if (result != S_OK)
 			return false;
 
-		result = device->CreateHullShader(HBlob->GetBufferPointer(), HBlob->GetBufferSize(), nullptr, mHS.GetAddressOf());
+		result = device->CreateHullShader(hBlob->GetBufferPointer(), hBlob->GetBufferSize(), nullptr, mHS.GetAddressOf());
 		assert(result == S_OK);
 
 		if (result != S_OK)
@@ -122,13 +122,13 @@ bool Pass::compile()
 
 	if (mFlag & PIXEL)
 	{
-		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "ds_5_0", compileFlag, 0, &PBlob, &ErrBlob);
+		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "ds_5_0", compileFlag, 0, &pBlob, &errBlob);
 		assert(result == S_OK);
 
 		if (result != S_OK)
 			return false;
 
-		result = device->CreatePixelShader(PBlob->GetBufferPointer(), PBlob->GetBufferSize(), nullptr, mPS.GetAddressOf());
+		result = device->CreatePixelShader(pBlob->GetBufferPointer(), pBlob->GetBufferSize(), nullptr, mPS.GetAddressOf());
 		assert(result == S_OK);
 
 		if (result != S_OK)

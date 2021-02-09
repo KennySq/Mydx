@@ -24,7 +24,7 @@ namespace Mydx
 		bool AddComponent();
 
 		template<typename _Comp>
-		_Comp* GetComponent();
+		_Comp* GetComponent() const;
 	private:
 		unsigned long long mInstanceID;
 		const char* mName;
@@ -44,7 +44,7 @@ namespace Mydx
 	}
 
 	template<typename _Comp>
-	inline _Comp* Instance::GetComponent()
+	inline _Comp* Instance::GetComponent() const
 	{
 		size_t typeHash = typeid(_Comp).hash_code();
 
