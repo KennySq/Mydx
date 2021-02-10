@@ -27,7 +27,7 @@ namespace Mydx
 		_Comp* GetComponent() const;
 	private:
 		unsigned long long mInstanceID;
-		const char* mName;
+		string mName;
 
 		unordered_map<unsigned long long, Component*> mComponents;
 		Transform mTransform;
@@ -48,7 +48,9 @@ namespace Mydx
 	{
 		size_t typeHash = typeid(_Comp).hash_code();
 
-		return dynamic_cast<_Comp*>(mComponents[typeHash]);
+		Component* comp = mComponents.at(typeHash);
+
+		return dynamic_cast<_Comp*>(comp);
 	}
 
 

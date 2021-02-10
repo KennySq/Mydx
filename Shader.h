@@ -31,7 +31,14 @@ namespace Mydx
 		ID3D11ShaderResourceView* const* GetPixelResources() { return mPixelT; }
 		ID3D11Buffer* const* GetPixelConstBuffers() { return mPixelC; }
 
-		Pass(const char* path, const char* entry, unsigned long passType);
+		inline unsigned int GetVertexResourceCount() const { return mVTCount; }
+		inline unsigned int GetPixelResourceCount() const { return mPTCount; }
+		inline unsigned int GetVertexConstBufferCount()const { return mVCCount; }
+		inline unsigned int GetPixelConstBufferCount() const { return mPCCount; }
+
+		eRenderType GetRenderType() const { return mRenderType; }
+
+		Pass(const char* path, const char* entry, unsigned long passType, unsigned long renderType);
 		~Pass();
 
 		
@@ -39,7 +46,7 @@ namespace Mydx
 	private:
 		const char* mPath;
 		const char* mEntry;
-		unsigned long mFlag;
+		unsigned long mPassType;
 		bool bCompiled = false;
 
 		eRenderType mRenderType;

@@ -4,26 +4,36 @@
 
 namespace Mydx
 {
-	bool Texture2D::Generate()
+	bool Texture2D::generateFromSwapChain()
 	{
 		if (mTexture != nullptr)
+		{
 			return false;
+		}
 
 		ID3D11Device* device = HW::GetDevice();
-		
-		auto result = device->CreateTexture2D(&mTextureDesc, nullptr, mTexture.GetAddressOf());
+		IDXGISwapChain* swapChain = HW::GetSwapChain();
+
+		auto result = swapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(mTexture.GetAddressOf()));
 		assert(result == S_OK);
 
 		if (result != S_OK)
+		{
 			return false;
+		}
 
+		return true;
+	}
+	bool Texture2D::generateViews()
+	{
+		ID3D11Device* device = HW::GetDevice();
 		DWORD bind = mTextureDesc.BindFlags;
 
 		if (bind & D3D11_BIND_RENDER_TARGET)
 		{
 			auto result = device->CreateRenderTargetView(mTexture.Get(), &mRenderTargetDesc, mRenderTarget.GetAddressOf());
 			assert(result == S_OK);
-			
+
 			if (result != S_OK)
 				return false;
 		}
@@ -53,6 +63,26 @@ namespace Mydx
 			if (result != S_OK)
 				return false;
 		}
+
+		return true;
+	}
+	bool Texture2D::Generate()
+	{
+		if (mTexture != nullptr)
+		{
+			return false;
+		}
+
+		ID3D11Device* device = HW::GetDevice();
+		
+		auto result = device->CreateTexture2D(&mTextureDesc, nullptr, mTexture.GetAddressOf());
+		assert(result == S_OK);
+
+		if (result != S_OK)
+		{
+			return false;
+		}
+
 
 		return true;
 	}
@@ -85,7 +115,7 @@ namespace Mydx
 		context->ClearRenderTargetView(mRenderTarget.Get(), clearColor);
 	}
 
-	Texture2D::Texture2D(D3D11_TEXTURE2D_DESC& texDesc) : mTextureDesc(texDesc), mDepthStencilDesc(), mUnordredAccessDesc(), mRenderTargetDesc(), mShaderResourceDesc()
+	Texture2D::Texture2D(D3D11_TEXTURE2D_DESC& texDesc, bool bSwapChain) : mTextureDesc(texDesc), mDepthStencilDesc(), mUnordredAccessDesc(), mRenderTargetDesc(), mShaderResourceDesc()
 	{
 		mRenderTargetDesc.Format = texDesc.Format;
 		mRenderTargetDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
@@ -99,115 +129,136 @@ namespace Mydx
 		mShaderResourceDesc.Format = texDesc.Format;
 		mShaderResourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 
-		Generate();
+		if (bSwapChain == false)
+		{
+			Generate();
+		}
+		else
+		{
+			generateFromSwapChain();
+		}
+
+		generateViews();
 	}
 
 	Texture2D::~Texture2D()
 	{}
 
 
-	bool SwapChainTexture2D::Generate()
-	{
-		if (mTexture != nullptr)
-			return false;
+	//SwapChainTexture2D& SwapChainTexture2D::operator=(const Texture2D& rhs)
+	//{
+	//	this->mDepthStencil = rhs.mDepthStencil;
+	//	this->mRenderTarget = rhs.mRenderTarget;
+	//	this->mShaderResource = rhs.mShaderResource;
+	//	this->mUnorderedAccess = rhs.GetUnorderedAccess();
 
-		ID3D11Device* device = HW::GetDevice();
-		IDXGISwapChain* swapchain = HW::GetSwapChain();
+	//	this->mTextureDesc = rhs.
 
-		auto result = swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(mTexture.GetAddressOf()));
-		assert(result == S_OK);
+	//	return *this;
+	//}
 
-		if (result != S_OK)
-			return false;
+	//bool SwapChainTexture2D::Generate()
+	//{
+	//	if (mTexture != nullptr)
+	//		return false;
 
-		DWORD bind = mTextureDesc.BindFlags;
+	//	ID3D11Device* device = HW::GetDevice();
+	//	IDXGISwapChain* swapchain = HW::GetSwapChain();
 
-		if (bind & D3D11_BIND_RENDER_TARGET)
-		{
-			auto result = device->CreateRenderTargetView(mTexture.Get(), &mRenderTargetDesc, mRenderTarget.GetAddressOf());
-			assert(result == S_OK);
+	//	auto result = swapchain->GetBuffer(0, __uuidof(ID3D11Texture2D), reinterpret_cast<void**>(mTexture.GetAddressOf()));
+	//	assert(result == S_OK);
 
-			if (result != S_OK)
-				return false;
-		}
+	//	if (result != S_OK)
+	//		return false;
 
-		if (bind & D3D11_BIND_SHADER_RESOURCE)
-		{
-			auto result = device->CreateShaderResourceView(mTexture.Get(), &mShaderResourceDesc, mShaderResource.GetAddressOf());
-			assert(result == S_OK);
+	//	DWORD bind = mTextureDesc.BindFlags;
 
-			if (result != S_OK)
-				return false;
-		}
-		if (bind & D3D11_BIND_DEPTH_STENCIL)
-		{
-			auto result = device->CreateDepthStencilView(mTexture.Get(), &mDepthStencilDesc, mDepthStencil.GetAddressOf());
-			assert(result == S_OK);
+	//	if (bind & D3D11_BIND_RENDER_TARGET)
+	//	{
+	//		auto result = device->CreateRenderTargetView(mTexture.Get(), &mRenderTargetDesc, mRenderTarget.GetAddressOf());
+	//		assert(result == S_OK);
 
-			if (result != S_OK)
-				return false;
-		}
+	//		if (result != S_OK)
+	//			return false;
+	//	}
 
-		if (bind & D3D11_BIND_UNORDERED_ACCESS)
-		{
-			auto result = device->CreateUnorderedAccessView(mTexture.Get(), &mUnordredAccessDesc, mUnorderedAccess.GetAddressOf());
-			assert(result == S_OK);
+	//	if (bind & D3D11_BIND_SHADER_RESOURCE)
+	//	{
+	//		auto result = device->CreateShaderResourceView(mTexture.Get(), &mShaderResourceDesc, mShaderResource.GetAddressOf());
+	//		assert(result == S_OK);
 
-			if (result != S_OK)
-				return false;
-		}
+	//		if (result != S_OK)
+	//			return false;
+	//	}
+	//	if (bind & D3D11_BIND_DEPTH_STENCIL)
+	//	{
+	//		auto result = device->CreateDepthStencilView(mTexture.Get(), &mDepthStencilDesc, mDepthStencil.GetAddressOf());
+	//		assert(result == S_OK);
 
-		return true;
-	}
+	//		if (result != S_OK)
+	//			return false;
+	//	}
 
-	void SwapChainTexture2D::Release()
-	{
-		if (mTexture != nullptr)
-			mTexture->Release();
+	//	if (bind & D3D11_BIND_UNORDERED_ACCESS)
+	//	{
+	//		auto result = device->CreateUnorderedAccessView(mTexture.Get(), &mUnordredAccessDesc, mUnorderedAccess.GetAddressOf());
+	//		assert(result == S_OK);
 
-		if (mDepthStencil != nullptr)
-			mDepthStencil->Release();
+	//		if (result != S_OK)
+	//			return false;
+	//	}
 
-		if (mRenderTarget != nullptr)
-			mRenderTarget->Release();
+	//	return true;
+	//}
 
-		if (mShaderResource != nullptr)
-			mShaderResource->Release();
+	//void SwapChainTexture2D::Release()
+	//{
+	//	if (mTexture != nullptr)
+	//		mTexture->Release();
 
-		if (mUnorderedAccess != nullptr)
-			mUnorderedAccess->Release();
-	}
+	//	if (mDepthStencil != nullptr)
+	//		mDepthStencil->Release();
 
-	void SwapChainTexture2D::ClearTexture(DirectX::XMVECTORF32 clearColor)
-	{
-		if (mRenderTarget == nullptr)
-			return;
+	//	if (mRenderTarget != nullptr)
+	//		mRenderTarget->Release();
 
-		ID3D11DeviceContext* context = HW::GetContext();
+	//	if (mShaderResource != nullptr)
+	//		mShaderResource->Release();
 
-		context->ClearRenderTargetView(mRenderTarget.Get(), clearColor);
+	//	if (mUnorderedAccess != nullptr)
+	//		mUnorderedAccess->Release();
+	//}
 
-	}
+	//void SwapChainTexture2D::ClearTexture(DirectX::XMVECTORF32 clearColor)
+	//{
+	//	if (mRenderTarget == nullptr)
+	//		return;
 
-	SwapChainTexture2D::SwapChainTexture2D(D3D11_TEXTURE2D_DESC& texDesc) : mTextureDesc(texDesc), mDepthStencilDesc(), mUnordredAccessDesc(), mRenderTargetDesc(), mShaderResourceDesc()
-	{
-		mRenderTargetDesc.Format = texDesc.Format;
-		mRenderTargetDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+	//	ID3D11DeviceContext* context = HW::GetContext();
 
-		mDepthStencilDesc.Format = DXGI_FORMAT_R32_TYPELESS;
-		mDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
+	//	context->ClearRenderTargetView(mRenderTarget.Get(), clearColor);
 
-		mUnordredAccessDesc.Format = texDesc.Format;
-		mUnordredAccessDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+	//}
 
-		mShaderResourceDesc.Format = texDesc.Format;
-		mShaderResourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+	//SwapChainTexture2D::SwapChainTexture2D(D3D11_TEXTURE2D_DESC& texDesc) : mTextureDesc(texDesc), mDepthStencilDesc(), mUnordredAccessDesc(), mRenderTargetDesc(), mShaderResourceDesc()
+	//{
+	//	mRenderTargetDesc.Format = texDesc.Format;
+	//	mRenderTargetDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 
-		bool bResult = Generate();
-		assert(bResult == true);
-		
-	}
+	//	mDepthStencilDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+	//	mDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
-	SwapChainTexture2D::~SwapChainTexture2D()
-	{}
+	//	mUnordredAccessDesc.Format = texDesc.Format;
+	//	mUnordredAccessDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+
+	//	mShaderResourceDesc.Format = texDesc.Format;
+	//	mShaderResourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+
+	//	bool bResult = Generate();
+	//	assert(bResult == true);
+	//	
+	//}
+
+	//SwapChainTexture2D::~SwapChainTexture2D()
+	//{}
 }

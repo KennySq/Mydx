@@ -39,11 +39,21 @@ namespace Mydx
 		mMesh = mesh;
 
 	}
-	void MeshRenderer::DrawForward(SwapChainTexture2D* target, Texture2D* depth, Viewport* viewport)
+	void MeshRenderer::SetPass(Pass* pass)
 	{
-		static Renderer3D& renderer = Renderer3D::GetInstance();
+		if (pass == nullptr)
+		{
+			pass = nullptr;
+			return;
+		}
+
+		mPass = pass;
+	
+	}
+	void MeshRenderer::DrawForward(Texture2D* target, Texture2D* depth, Viewport* viewport)
+	{
 		
-		if (this->mMesh == nullptr)
+		if (mMesh == nullptr || viewport == nullptr)
 		{
 			return;
 		}
@@ -64,6 +74,7 @@ namespace Mydx
 		mContext->RSSetViewports(1, viewport->GetViewport());
 		mContext->IASetVertexBuffers(0, 1, &vertexBuffer, strides, offsets);
 		mContext->IASetIndexBuffer(mMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
+		
 		mContext->DrawIndexed(mMesh->GetIndexCount(), 0, 0);
 	}
 	void MeshRenderer::bindPass()
@@ -112,11 +123,11 @@ namespace Mydx
 		ID3D11ShaderResourceView* const* pixelResources = mPass->GetPixelResources();
 		ID3D11Buffer* const* pixelConstBuffers = mPass->GetPixelConstBuffers();
 
-		bindVertexShaderResources(vertexResources, 128);
-		bindVertexConstBuffer(vertexConstBuffers, 15);
+		bindVertexShaderResources(vertexResources, mPass->GetVertexResourceCount());
+		bindVertexConstBuffer(vertexConstBuffers, mPass->GetVertexConstBufferCount());
 
-		bindPixelShaderResources(pixelResources, 8);
-		bindPixelConstBuffer(pixelConstBuffers, 15);
+		bindPixelShaderResources(pixelResources, mPass->GetPixelResourceCount());
+		bindPixelConstBuffer(pixelConstBuffers, mPass->GetPixelConstBufferCount());
 	}
 	void MeshRenderer::bindVertexShaderResources(ID3D11ShaderResourceView* const* shaderResources, unsigned int resourceCount)
 	{

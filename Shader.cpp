@@ -31,7 +31,7 @@ void Pass::Release()
 
 }
 
-Pass::Pass(const char* path, const char* entry, unsigned long passType) : mPath(path), mEntry(entry), mFlag(passType)
+Pass::Pass(const char* path, const char* entry, unsigned long passType, unsigned long renderType) : mPath(path), mEntry(entry), mPassType(passType), mRenderType(static_cast<eRenderType>(renderType))
 {
 	Generate();
 }
@@ -56,7 +56,7 @@ bool Pass::compile()
 	compileFlag |= D3DCOMPILE_DEBUG;
 #endif
 
-	if (mFlag & VERTEX)
+	if (mPassType & VERTEX)
 	{
 		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "vs_5_0", compileFlag, 0, &vBlob, &errBlob);
 		assert(result == S_OK);
@@ -75,7 +75,7 @@ bool Pass::compile()
 			return false;
 	}
 
-	if (mFlag & GEOMETRY)
+	if (mPassType & GEOMETRY)
 	{
 		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "gs_5_0", compileFlag, 0, &gBlob, &errBlob);
 		assert(result == S_OK);
@@ -90,7 +90,7 @@ bool Pass::compile()
 			return false;
 	}
 
-	if (mFlag & DMAIN)
+	if (mPassType & DMAIN)
 	{
 		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "ds_5_0", compileFlag, 0, &dBlob, &errBlob);
 		assert(result == S_OK);
@@ -105,7 +105,7 @@ bool Pass::compile()
 			return false;
 	}
 
-	if (mFlag & HULL)
+	if (mPassType & HULL)
 	{
 		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "hs_5_0", compileFlag, 0, &hBlob, &errBlob);
 		assert(result == S_OK);
@@ -120,7 +120,7 @@ bool Pass::compile()
 			return false;
 	}
 
-	if (mFlag & PIXEL)
+	if (mPassType & PIXEL)
 	{
 		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "ds_5_0", compileFlag, 0, &pBlob, &errBlob);
 		assert(result == S_OK);

@@ -3,6 +3,8 @@
 
 #include"Instance.h"
 #include"MeshRenderer.h"
+#include"Camera.h"
+#include"Renderer.h"
 
 namespace Mydx
 {
@@ -35,14 +37,16 @@ namespace Mydx
     }
     void Scene::Init()
     {
+        Renderer2D& r2d = Renderer2D::GetInstance();
         
+        Texture2D* tex = r2d.GetTexture2D(0);
+        Texture2D* depth = r2d.GetTexture2D(1);
+        Viewport* viewport = new Viewport(tex, depth, 800, 600, 0, 0);
+        mSelectedCamera = new Camera(5.0f, 0.0f, 0.0f, 60.0f, 1.333f, viewport);
     }
     void Scene::Update(float delta)
     {
-        for (auto i : mRenderInstances)
-        {
-            
-        }
+        renderScene();
     }
     void Scene::Render(float delta)
     {
@@ -56,4 +60,29 @@ namespace Mydx
     {}
     Scene::~Scene()
     {}
+    void Scene::renderScene()
+    {
+        static Renderer2D& r2d = Renderer2D::GetInstance();
+        for (auto i : mRenderInstances)
+        {
+            Pass* pass = i->GetPass();
+            if (pass == nullptr || mSelectedCamera == nullptr)
+            {
+                continue;
+            }
+            eRenderType type = pass->GetRenderType();
+            
+            Viewport* viewport = mSelectedCamera->GetViewport();
+            if (viewport == nullptr)
+            {
+                continue;
+            }
+            switch (type)
+            {
+                case FORWARD:
+                    i->DrawForward(viewport->GetImage(), viewport->GetDepth(), viewport);
+                    break;
+            }
+        }
+    }
 }

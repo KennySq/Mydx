@@ -8,8 +8,7 @@ namespace Mydx
     struct Mesh;
     struct Pass;
     struct Texture2D;
-    struct SwapChainTexture2D;
-    struct Viewport;
+    class Viewport;
     class MeshRenderer :
         public Component
     {
@@ -23,11 +22,12 @@ namespace Mydx
         virtual void Release() override;
 
         void SetMesh(Mesh* mesh);
+        void SetPass(Pass* pass);
 
         Mesh* GetMesh() const { return mMesh; }
         Pass* GetPass() const { return mPass; }
 
-        void DrawForward(SwapChainTexture2D* target, Texture2D* depth, Viewport* viewport);
+        void DrawForward(Texture2D* target, Texture2D* depth, Viewport* viewport);
     private:
         void bindPass();
         void bindResources();

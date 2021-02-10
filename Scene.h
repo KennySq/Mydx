@@ -6,12 +6,15 @@ namespace Mydx
 {
 	class MeshRenderer;
 	class Instance;
+	class Camera;
 	class Scene
 	{
 	public:
 		void AddInstance(Instance* instance);
 		Instance* GetInstance(unsigned int index) const;
-	
+
+		Camera* GetCamera() const { return mSelectedCamera; }
+
 		void Init();
 		void Update(float delta);
 		void Render(float delta);
@@ -21,8 +24,12 @@ namespace Mydx
 		~Scene();
 
 	private:
-		const char* mName;
+		void renderScene();
+
+		string mName;
 		unsigned long long mSceneID;
+
+		Camera* mSelectedCamera;
 
 		vector<Instance*> mInstances;
 		vector<MeshRenderer*> mRenderInstances;
