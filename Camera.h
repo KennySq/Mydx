@@ -12,6 +12,7 @@ namespace Mydx
 	{
 
 		Viewport* GetViewport() const { return mViewport; }
+		ID3D11Buffer* GetBuffer() const { return mBuffer.Get(); }
 
 		Camera(XMVECTOR position, float fov, float aspectRatio, Viewport* viewport);
 		Camera(float px, float py, float pz, float fov, float aspectRatio, Viewport* viewport);

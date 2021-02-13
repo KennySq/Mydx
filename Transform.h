@@ -13,6 +13,8 @@ namespace Mydx
 		void Rotate(float x, float y, float z);
 		void SetScale(float x, float y, float z);
 
+		ID3D11Buffer* GetBuffer() const { return mBuffer.Get(); }
+
 		Transform();
 		Transform(XMVECTOR position, XMVECTOR rotation, XMVECTOR scale);
 		Transform(const Transform& rhs);

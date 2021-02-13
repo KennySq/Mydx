@@ -29,8 +29,8 @@ namespace Mydx
 		ComPtr<ID3D11Buffer> mVertexBuffer;
 		ComPtr<ID3D11Buffer> mIndexBuffer;
 
-		unsigned int mStride;
-		unsigned int mOffset;
+		unsigned int mStride = 0;
+		unsigned int mOffset = 0;
 
 		unsigned int mVertexCount = 0;
 		unsigned int mIndexCount = 0;

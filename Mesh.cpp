@@ -21,6 +21,8 @@ Mydx::Mesh::Mesh(eMeshType meshType, eVertexType vertexType) : mMeshType(meshTyp
 
 	}
 
+	mOffset = 0;
+
 }
 
 Mydx::Mesh::Mesh(const Mesh& rhs)

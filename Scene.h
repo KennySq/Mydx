@@ -1,7 +1,7 @@
 #pragma once
 
 using namespace std;
-
+#include"RenderQueue.h"
 namespace Mydx
 {
 	class MeshRenderer;
@@ -14,7 +14,7 @@ namespace Mydx
 		Instance* GetInstance(unsigned int index) const;
 
 		Camera* GetCamera() const { return mSelectedCamera; }
-
+	
 		void Init();
 		void Update(float delta);
 		void Render(float delta);
@@ -33,6 +33,8 @@ namespace Mydx
 
 		vector<Instance*> mInstances;
 		vector<MeshRenderer*> mRenderInstances;
+
+		RenderQueue mRenderQueue;
 
 	};
 }

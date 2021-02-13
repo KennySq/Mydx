@@ -9,6 +9,7 @@ namespace Mydx
     struct Pass;
     struct Texture2D;
     class Viewport;
+    class Instance;
     class MeshRenderer :
         public Component
     {

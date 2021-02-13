@@ -1,6 +1,7 @@
 #pragma once
 namespace Mydx
 {
+	class Instance;
 	class Component
 	{
 	public:
@@ -13,6 +14,8 @@ namespace Mydx
 		const char* GetName() const { return mName; }
 		unsigned long long GetComponentID() const { return mComponentID; }
 
+		void SetRoot(Instance* root) { if (root == nullptr) return; mRoot = root; }
+
 		template<typename _Ty>
 		inline _Ty* As()
 		{
@@ -21,6 +24,9 @@ namespace Mydx
 
 		Component(const char* componentName);
 		virtual ~Component() {}
+	protected:
+		Instance* mRoot = nullptr;
+
 	private:
 
 		const char* mName;

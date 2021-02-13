@@ -38,8 +38,9 @@ namespace Mydx
 	{
 		Component* comp = new _Comp();
 
+		comp->SetRoot(this);
 		mComponents.insert_or_assign(typeid(_Comp).hash_code(), comp);
-
+		
 		return true;
 	}
 

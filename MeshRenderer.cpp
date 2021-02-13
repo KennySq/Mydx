@@ -1,8 +1,10 @@
 #include "pch.h"
+
 #include "MeshRenderer.h"
 #include"Renderer.h"
 #include"Shader.h"
 #include"Texture2D.h"
+#include"Instance.h"
 
 namespace Mydx
 {
@@ -65,16 +67,19 @@ namespace Mydx
 		bindPass();
 		bindResources();
 
+		Transform* transform = mRoot->GetTransform();
+
 		ID3D11Buffer* vertexBuffer = mMesh->GetVertexBuffer();
 		ID3D11Buffer* indexBuffer = mMesh->GetIndexBuffer();
+		ID3D11Buffer* instanceBuffer = transform->GetBuffer();
 
-		unsigned int strides[1] = { mMesh->GetStride(), };
-		unsigned int offsets[1] = { mMesh->GetOffset(), };
+		unsigned int strides[1] = { mMesh->GetStride() };
+		unsigned int offsets[1] = { mMesh->GetOffset() };
 
 		mContext->RSSetViewports(1, viewport->GetViewport());
 		mContext->IASetVertexBuffers(0, 1, &vertexBuffer, strides, offsets);
 		mContext->IASetIndexBuffer(mMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
-		
+		mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		mContext->DrawIndexed(mMesh->GetIndexCount(), 0, 0);
 	}
 	void MeshRenderer::bindPass()

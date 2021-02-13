@@ -9,8 +9,6 @@ using namespace Mydx;
 
 namespace Mydx
 {
-	constexpr int REGISTER_CAPACITY = 8;
-
 	struct Pass : IMemory
 	{
 		
@@ -35,6 +33,12 @@ namespace Mydx
 		inline unsigned int GetPixelResourceCount() const { return mPTCount; }
 		inline unsigned int GetVertexConstBufferCount()const { return mVCCount; }
 		inline unsigned int GetPixelConstBufferCount() const { return mPCCount; }
+
+		void AddCRegisterVertex(ID3D11Buffer* buffer);
+		void AddTRegisterVertex(ID3D11ShaderResourceView* resource);
+		void AddCRegisterPixel(ID3D11Buffer* buffer);
+		void AddTRegisterPixel(ID3D11ShaderResourceView* resource);
+
 
 		eRenderType GetRenderType() const { return mRenderType; }
 

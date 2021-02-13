@@ -31,6 +31,46 @@ void Pass::Release()
 
 }
 
+void Mydx::Pass::AddCRegisterVertex(ID3D11Buffer* buffer)
+{
+	if (mVCCount >= 15 || mVCCount < 0 || buffer == nullptr)
+	{
+		return;
+	}
+
+	mVertexC[mVCCount++] = buffer;
+}
+
+void Mydx::Pass::AddTRegisterVertex(ID3D11ShaderResourceView* resource)
+{
+	if (mVTCount >= 15 || mVTCount < 0 || resource == nullptr)
+	{
+		return;
+	}
+
+	mVertexT[mVTCount++] = resource;
+}
+
+void Mydx::Pass::AddCRegisterPixel(ID3D11Buffer* buffer)
+{
+	if (mPCCount >= 15 || mPCCount < 0 || buffer == nullptr)
+	{
+		return;
+	}
+
+	mPixelC[mPCCount++] = buffer;
+}
+
+void Mydx::Pass::AddTRegisterPixel(ID3D11ShaderResourceView* resource)
+{
+	if (mPTCount >= 8 || mPTCount < 0 || resource == nullptr)
+	{
+		return;
+	}
+
+	mPixelT[mPTCount++] = resource;
+}
+
 Pass::Pass(const char* path, const char* entry, unsigned long passType, unsigned long renderType) : mPath(path), mEntry(entry), mPassType(passType), mRenderType(static_cast<eRenderType>(renderType))
 {
 	Generate();

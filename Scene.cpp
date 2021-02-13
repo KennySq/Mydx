@@ -1,8 +1,10 @@
 #include"pch.h"
 #include"Scene.h"
+#include"RenderQueue.h"
 
 #include"Instance.h"
 #include"MeshRenderer.h"
+
 #include"Camera.h"
 #include"Renderer.h"
 
@@ -11,19 +13,11 @@ namespace Mydx
     void Scene::AddInstance(Instance* instance)
     {
         if (instance == nullptr)
-        {
+        {   
             return;
         }
         mInstances.push_back(instance);
-
-        MeshRenderer* renderComponent = instance->GetComponent<MeshRenderer>();
-
-        if (renderComponent == nullptr)
-        {
-            return;
-        }
-
-        mRenderInstances.push_back(renderComponent);
+        mRenderQueue.Push(instance);
     }
 
     Instance* Scene::GetInstance(unsigned int index) const
@@ -63,26 +57,29 @@ namespace Mydx
     void Scene::renderScene()
     {
         static Renderer2D& r2d = Renderer2D::GetInstance();
-        for (auto i : mRenderInstances)
+        size_t renderCount = mRenderQueue.GetCount();
+        Viewport* viewport = mSelectedCamera->GetViewport();
+
+        for (int i = 0; i < renderCount; i++)
         {
-            Pass* pass = i->GetPass();
-            if (pass == nullptr || mSelectedCamera == nullptr)
-            {
-                continue;
-            }
-            eRenderType type = pass->GetRenderType();
+            MeshRenderer* inst = mRenderQueue.Pop();
+
+            Pass* pass = inst->GetPass();
             
-            Viewport* viewport = mSelectedCamera->GetViewport();
-            if (viewport == nullptr)
+            eRenderType type = pass->GetRenderType();
+            bool bCriteria = pass == nullptr || mSelectedCamera == nullptr || viewport == nullptr;
+            if (bCriteria == true)
             {
                 continue;
             }
+
             switch (type)
             {
                 case FORWARD:
-                    i->DrawForward(viewport->GetImage(), viewport->GetDepth(), viewport);
+                    inst->DrawForward(viewport->GetImage(), viewport->GetDepth(), viewport);
                     break;
             }
         }
+
     }
 }
