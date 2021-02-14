@@ -31,47 +31,8 @@ void Pass::Release()
 
 }
 
-void Mydx::Pass::AddCRegisterVertex(ID3D11Buffer* buffer)
-{
-	if (mVCCount >= 15 || mVCCount < 0 || buffer == nullptr)
-	{
-		return;
-	}
-
-	mVertexC[mVCCount++] = buffer;
-}
-
-void Mydx::Pass::AddTRegisterVertex(ID3D11ShaderResourceView* resource)
-{
-	if (mVTCount >= 15 || mVTCount < 0 || resource == nullptr)
-	{
-		return;
-	}
-
-	mVertexT[mVTCount++] = resource;
-}
-
-void Mydx::Pass::AddCRegisterPixel(ID3D11Buffer* buffer)
-{
-	if (mPCCount >= 15 || mPCCount < 0 || buffer == nullptr)
-	{
-		return;
-	}
-
-	mPixelC[mPCCount++] = buffer;
-}
-
-void Mydx::Pass::AddTRegisterPixel(ID3D11ShaderResourceView* resource)
-{
-	if (mPTCount >= 8 || mPTCount < 0 || resource == nullptr)
-	{
-		return;
-	}
-
-	mPixelT[mPTCount++] = resource;
-}
-
-Pass::Pass(const char* path, const char* entry, unsigned long passType, unsigned long renderType) : mPath(path), mEntry(entry), mPassType(passType), mRenderType(static_cast<eRenderType>(renderType))
+Pass::Pass(const char* path, const char* entry, unsigned long passType, unsigned long renderType)
+	: mPath(path), mEntry(entry), mPassType(passType), mRenderType(static_cast<eRenderType>(renderType))
 {
 	Generate();
 }
@@ -98,7 +59,9 @@ bool Pass::compile()
 
 	if (mPassType & VERTEX)
 	{
-		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "vs_5_0", compileFlag, 0, &vBlob, &errBlob);
+		string str = string(mEntry) + "VS";
+		
+		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, str.c_str(), "vs_5_0", compileFlag, 0, &vBlob, &errBlob);
 		assert(result == S_OK);
 
 		if (result != S_OK)
@@ -117,7 +80,8 @@ bool Pass::compile()
 
 	if (mPassType & GEOMETRY)
 	{
-		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "gs_5_0", compileFlag, 0, &gBlob, &errBlob);
+		string str = string(mEntry) + "GS";
+		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, str.c_str(), "gs_5_0", compileFlag, 0, &gBlob, &errBlob);
 		assert(result == S_OK);
 
 		if (result != S_OK)
@@ -132,7 +96,8 @@ bool Pass::compile()
 
 	if (mPassType & DMAIN)
 	{
-		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "ds_5_0", compileFlag, 0, &dBlob, &errBlob);
+		string str = string(mEntry) + "DS";
+		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, str.c_str(), "ds_5_0", compileFlag, 0, &dBlob, &errBlob);
 		assert(result == S_OK);
 
 		if (result != S_OK)
@@ -147,7 +112,8 @@ bool Pass::compile()
 
 	if (mPassType & HULL)
 	{
-		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "hs_5_0", compileFlag, 0, &hBlob, &errBlob);
+		string str = string(mEntry) + "HS";
+		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, str.c_str(), "hs_5_0", compileFlag, 0, &hBlob, &errBlob);
 		assert(result == S_OK);
 
 		if (result != S_OK)
@@ -162,7 +128,8 @@ bool Pass::compile()
 
 	if (mPassType & PIXEL)
 	{
-		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, mEntry, "ds_5_0", compileFlag, 0, &pBlob, &errBlob);
+		string str = string(mEntry) + "PS";
+		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, str.c_str(), "ps_5_0", compileFlag, 0, &pBlob, &errBlob);
 		assert(result == S_OK);
 
 		if (result != S_OK)

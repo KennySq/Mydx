@@ -105,14 +105,30 @@ namespace Mydx
 			mUnorderedAccess->Release();
 	}
 
-	void Texture2D::ClearTexture(DirectX::XMVECTORF32 clearColor)
+	void Texture2D::ClearRenderTarget(DirectX::XMVECTORF32 clearColor)
 	{
 		if (mRenderTarget == nullptr)
+		{
 			return;
 
-		ID3D11DeviceContext* context = HW::GetContext();
+		}
+
+		static ID3D11DeviceContext* context = HW::GetContext();
 
 		context->ClearRenderTargetView(mRenderTarget.Get(), clearColor);
+	}
+
+	void Texture2D::ClearDepthStencil()
+	{
+		if (mDepthStencil == nullptr)
+		{
+			return;
+
+		}
+
+		static ID3D11DeviceContext* context = HW::GetContext();
+
+		context->ClearDepthStencilView(mDepthStencil.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
 	Texture2D::Texture2D(D3D11_TEXTURE2D_DESC& texDesc, bool bSwapChain) : mTextureDesc(texDesc), mDepthStencilDesc(), mUnordredAccessDesc(), mRenderTargetDesc(), mShaderResourceDesc()

@@ -10,7 +10,7 @@ namespace Mydx
 	typedef class RenderQueue
 	{
 	public:
-		void Push(Instance* renderInstance);
+		void Push(MeshRenderer* renderInstance);
 		MeshRenderer* Pop();
 
 		inline size_t GetCount() const { return mInstances.size(); }

@@ -22,7 +22,9 @@ namespace Mydx
 	}
 
 	void MeshRenderer::Update(float delta)
-	{}
+	{
+		mState.Bind();
+	}
 
 	void MeshRenderer::Render(float delta)
 	{}
@@ -55,6 +57,8 @@ namespace Mydx
 	void MeshRenderer::DrawForward(Texture2D* target, Texture2D* depth, Viewport* viewport)
 	{
 		
+		Update(0.0f);
+
 		if (mMesh == nullptr || viewport == nullptr)
 		{
 			return;
@@ -76,11 +80,14 @@ namespace Mydx
 		unsigned int strides[1] = { mMesh->GetStride() };
 		unsigned int offsets[1] = { mMesh->GetOffset() };
 
+		mContext->RSSetState(mState.GetState());
 		mContext->RSSetViewports(1, viewport->GetViewport());
 		mContext->IASetVertexBuffers(0, 1, &vertexBuffer, strides, offsets);
 		mContext->IASetIndexBuffer(mMesh->GetIndexBuffer(), DXGI_FORMAT_R32_UINT, 0);
 		mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+		
 		mContext->DrawIndexed(mMesh->GetIndexCount(), 0, 0);
+
 	}
 	void MeshRenderer::bindPass()
 	{
@@ -123,16 +130,7 @@ namespace Mydx
 	}
 	void MeshRenderer::bindResources()
 	{
-		ID3D11ShaderResourceView* const* vertexResources = mPass->GetVertexResources();
-		ID3D11Buffer* const* vertexConstBuffers = mPass->GetVertexConstBuffers();
-		ID3D11ShaderResourceView* const* pixelResources = mPass->GetPixelResources();
-		ID3D11Buffer* const* pixelConstBuffers = mPass->GetPixelConstBuffers();
-
-		bindVertexShaderResources(vertexResources, mPass->GetVertexResourceCount());
-		bindVertexConstBuffer(vertexConstBuffers, mPass->GetVertexConstBufferCount());
-
-		bindPixelShaderResources(pixelResources, mPass->GetPixelResourceCount());
-		bindPixelConstBuffer(pixelConstBuffers, mPass->GetPixelConstBufferCount());
+		
 	}
 	void MeshRenderer::bindVertexShaderResources(ID3D11ShaderResourceView* const* shaderResources, unsigned int resourceCount)
 	{

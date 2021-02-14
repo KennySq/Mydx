@@ -5,21 +5,14 @@
 
 namespace Mydx
 {
-    void RenderQueue::Push(Instance* renderInstance)
+    void RenderQueue::Push(MeshRenderer* renderInstance)
     {
         if (renderInstance == nullptr)
         {
             return;
         }
 
-        MeshRenderer* mr = renderInstance->GetComponent<MeshRenderer>();
-
-        if (mr == nullptr)
-        {
-            return;
-        }
-
-        mInstances.push(mr);
+        mInstances.push(renderInstance);
     }
     MeshRenderer* RenderQueue::Pop()
     {

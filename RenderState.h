@@ -1,6 +1,7 @@
 #pragma once
 
 #include"ePassType.h"
+#include"RegisterVector.h"
 
 namespace Mydx
 {
@@ -13,27 +14,28 @@ namespace Mydx
 	{
 	public:
 		void ChangeDrawMode(D3D11_FILL_MODE fillMode);
+		void ChangeCullMode(D3D11_CULL_MODE cullMode);
 
 		bool Bind();
 
-		void Add(ID3D11Buffer* buffer, ePassType passType);
-		void Add(ID3D11ShaderResourceView* resource, ePassType passType);
+		void AddResource(ID3D11Buffer* buffer, ePassType passType, unsigned int index);
+		void AddResource(ID3D11ShaderResourceView* resource, ePassType passType, unsigned int index);
+
+		ID3D11RasterizerState* GetState() const { return mRaster.Get(); }
+
+		RenderState();
+		~RenderState();
 
 	private:
 		ComPtr<ID3D11RasterizerState> mRaster;
 
-		ID3D11Buffer* mVertexConstRegister[15];
-		ID3D11ShaderResourceView* mVertexTextureRegister[128];
+		RegisterVector mVertexConstRegister;
+		RegisterVector mVertexTextureRegister;
 
-		ID3D11Buffer* mPixelConstRegister[15];
-		ID3D11ShaderResourceView* mPixelTextureRegister[8];
+		RegisterVector mPixelConstRegister;
+		RegisterVector mPixelTextureRegister;
 
-		unsigned int mVertexConstRegisterCount = 0;
-		unsigned int mVertexTextureRegisterCount = 0;
-		unsigned int mPixelConstRegisterCount = 0;
-		unsigned int mPixelTextureRegisterCount = 0;
-
-
+		ID3D11DeviceContext* mContext;
 
 	};
 }

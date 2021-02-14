@@ -23,29 +23,12 @@ namespace Mydx
 		ID3D11PixelShader* GetPS()const { return mPS.Get(); }
 		ID3D11InputLayout* GetIL() const { return mIL.Get(); }
 
-		ID3D11ShaderResourceView* const* GetVertexResources() { return mVertexT; }
-		ID3D11Buffer* const* GetVertexConstBuffers() { return mVertexC; }
-
-		ID3D11ShaderResourceView* const* GetPixelResources() { return mPixelT; }
-		ID3D11Buffer* const* GetPixelConstBuffers() { return mPixelC; }
-
-		inline unsigned int GetVertexResourceCount() const { return mVTCount; }
-		inline unsigned int GetPixelResourceCount() const { return mPTCount; }
-		inline unsigned int GetVertexConstBufferCount()const { return mVCCount; }
-		inline unsigned int GetPixelConstBufferCount() const { return mPCCount; }
-
-		void AddCRegisterVertex(ID3D11Buffer* buffer);
-		void AddTRegisterVertex(ID3D11ShaderResourceView* resource);
-		void AddCRegisterPixel(ID3D11Buffer* buffer);
-		void AddTRegisterPixel(ID3D11ShaderResourceView* resource);
-
-
 		eRenderType GetRenderType() const { return mRenderType; }
 
 		Pass(const char* path, const char* entry, unsigned long passType, unsigned long renderType);
 		~Pass();
 
-		
+	
 
 	private:
 		const char* mPath;
@@ -61,19 +44,6 @@ namespace Mydx
 		ComPtr<ID3D11DomainShader> mDS;
 		ComPtr<ID3D11HullShader> mHS;
 		ComPtr<ID3D11PixelShader> mPS;
-
-		// Registers
-		// Vertex
-		ID3D11ShaderResourceView* mVertexT[128];
-		ID3D11Buffer* mVertexC[15];
-		unsigned int mVTCount = 0;
-		unsigned int mVCCount = 0;
-
-		// Pixel 
-		ID3D11ShaderResourceView* mPixelT[8];
-		ID3D11Buffer* mPixelC[15];
-		unsigned int mPTCount = 0;
-		unsigned int mPCCount = 0;
 
 		bool compile();
 		bool reflect(ID3DBlob* vertexBlob, ID3D11InputLayout** pInputLayout, ID3D11ShaderReflection** pReflection);

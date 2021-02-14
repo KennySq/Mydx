@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include"RenderState.h"
 
 using namespace Mydx;
 
@@ -27,6 +28,7 @@ namespace Mydx
 
         Mesh* GetMesh() const { return mMesh; }
         Pass* GetPass() const { return mPass; }
+        RenderState& GetState() { return mState; }
 
         void DrawForward(Texture2D* target, Texture2D* depth, Viewport* viewport);
     private:
@@ -41,6 +43,7 @@ namespace Mydx
 
         Mesh* mMesh = nullptr;
         Pass* mPass = nullptr;
+        RenderState mState;
 
         ID3D11DeviceContext* mContext = nullptr;
     };

@@ -3,77 +3,111 @@
 
 namespace Mydx
 {
+	void RenderState::ChangeDrawMode(D3D11_FILL_MODE fillMode)
+	{
+		ID3D11Device* device = HW::GetDevice();
+		D3D11_RASTERIZER_DESC desc{};
+
+		mRaster->GetDesc(&desc);
+		desc.FillMode = fillMode;
+
+		mRaster->Release();
+
+		device->CreateRasterizerState(&desc, mRaster.GetAddressOf());
+	}
+	void RenderState::ChangeCullMode(D3D11_CULL_MODE cullMode)
+	{
+		ID3D11Device* device = HW::GetDevice();
+		D3D11_RASTERIZER_DESC desc{};
+
+		mRaster->GetDesc(&desc);
+		desc.CullMode = cullMode;
+
+		mRaster->Release();
+
+		device->CreateRasterizerState(&desc, mRaster.GetAddressOf());
+	}
 	bool RenderState::Bind()
 	{
 		static ID3D11DeviceContext* context = HW::GetContext();
 
-		if (mVertexTextureRegisterCount != 0)
+		ID3D11Buffer* vBuffer[MAX_VERTEX_CONSTANT_REGISTER];
+		ID3D11Buffer* pBuffer[MAX_PIXEL_CONSTANT_REGISTER];
+		ID3D11ShaderResourceView* vTexture[MAX_VERTEX_TEXTURE_REGISTER];
+		ID3D11ShaderResourceView* pTexture[MAX_PIXEL_TEXTURE_REGISTER];
+
+		for (size_t i = 0; i < mVertexConstRegister.size(); i++)
 		{
-			context->VSSetShaderResources(0, mVertexTextureRegisterCount, mVertexTextureRegister);
+			vBuffer[i] = mVertexConstRegister[i].AsBuffer();
 		}
 
-		if (mVertexConstRegisterCount != 0);
+		for (size_t i = 0; i < mVertexTextureRegister.size(); i++)
 		{
-			context->VSSetConstantBuffers(0, mVertexConstRegisterCount, mVertexConstRegister);
+			vTexture[i] = mVertexTextureRegister[i].AsResource();
 		}
 
-		if (mPixelTextureRegisterCount != 0)
+		for (size_t i = 0; i < mPixelConstRegister.size(); i++)
 		{
-			context->PSSetShaderResources(0, mPixelTextureRegisterCount, mPixelTextureRegister);
+			pBuffer[i] = mPixelConstRegister[i].AsBuffer();
 		}
 
-		if (mPixelConstRegisterCount != 0)
+		for (size_t i = 0; i < mPixelTextureRegister.size(); i++)
 		{
-			context->PSSetConstantBuffers(0, mPixelConstRegisterCount, mPixelConstRegister);
+			pTexture[i] = mPixelTextureRegister[i].AsResource();
 		}
+
+		context->VSSetShaderResources(0, mVertexTextureRegister.size(), vTexture);
+		context->VSSetConstantBuffers(0, mVertexConstRegister.size(), vBuffer);
+		context->PSSetShaderResources(0, mPixelTextureRegister.size(), pTexture);
+		context->PSSetConstantBuffers(0, mPixelConstRegister.size(), pBuffer);
 
 		return true;
 	}
-	void RenderState::Add(ID3D11Buffer* buffer, ePassType passType)
+	void RenderState::AddResource(ID3D11Buffer* buffer, ePassType passType, unsigned int index)
 	{
 		switch (passType)
 		{
 			case VERTEX:
-				if (mVertexConstRegisterCount >= MAX_VERTEX_CONSTANT_REGISTER)
+				if (index >= MAX_VERTEX_CONSTANT_REGISTER)
 				{
 					return;
 				}
-				mVertexConstRegister[mVertexConstRegisterCount++] = buffer;
+				mVertexConstRegister.push_back(buffer);
 				break;
 			case PIXEL:
 
-				if (mPixelConstRegisterCount >= MAX_PIXEL_CONSTANT_REGISTER)
+				if (index >= MAX_PIXEL_CONSTANT_REGISTER)
 				{
 					return;
 				}
-				mPixelConstRegister[mPixelConstRegisterCount++] = buffer;
+				mPixelConstRegister.push_back(buffer);
 				break;
 			default:
 				return;
 				break;
 		}
 	}
-	void RenderState::Add(ID3D11ShaderResourceView* resource, ePassType passType)
+	void RenderState::AddResource(ID3D11ShaderResourceView* resource, ePassType passType, unsigned int index)
 	{
 		switch (passType)
 		{
 			case VERTEX:
-				if (mVertexTextureRegisterCount >= MAX_VERTEX_TEXTURE_REGISTER)
+				if (index >= MAX_VERTEX_TEXTURE_REGISTER)
 				{
 					return;
 				}
 
-				mVertexTextureRegister[mVertexTextureRegisterCount++] = resource;
+				mVertexTextureRegister.push_back(resource);
 
 				break;
 
 			case PIXEL:
-				if (mPixelTextureRegisterCount >= MAX_PIXEL_TEXTURE_REGISTER)
+				if (index >= MAX_PIXEL_TEXTURE_REGISTER)
 				{
 					return;
 				}
 
-				mPixelTextureRegister[mPixelTextureRegisterCount++] = resource;
+				mPixelTextureRegister.push_back(resource);
 
 				break;
 			default:
@@ -81,4 +115,34 @@ namespace Mydx
 				break;
 		}
 	}
+
+	RenderState::RenderState() 
+		: mContext(HW::GetContext()),
+		mVertexConstRegister(MAX_VERTEX_CONSTANT_REGISTER),
+		mVertexTextureRegister(MAX_VERTEX_TEXTURE_REGISTER),
+		mPixelConstRegister(MAX_PIXEL_CONSTANT_REGISTER),
+		mPixelTextureRegister(MAX_PIXEL_TEXTURE_REGISTER)
+	{
+		ID3D11Device* device = HW::GetDevice();
+		D3D11_RASTERIZER_DESC rasterDesc;
+
+		rasterDesc.CullMode = D3D11_CULL_BACK;
+		rasterDesc.DepthBias = 0;
+		rasterDesc.DepthBiasClamp = 0;
+		rasterDesc.DepthClipEnable = true;
+		rasterDesc.AntialiasedLineEnable = false;
+		rasterDesc.FrontCounterClockwise = false;
+		rasterDesc.FillMode = D3D11_FILL_SOLID;
+		rasterDesc.MultisampleEnable = false;
+		rasterDesc.ScissorEnable = false;
+		rasterDesc.SlopeScaledDepthBias = 0.0f;
+
+		device->CreateRasterizerState(&rasterDesc, mRaster.GetAddressOf());
+	}
+
+	RenderState::~RenderState()
+	{
+
+	}
+
 }

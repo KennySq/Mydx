@@ -17,7 +17,15 @@ namespace Mydx
             return;
         }
         mInstances.push_back(instance);
-        mRenderQueue.Push(instance);
+
+        MeshRenderer* mr = instance->GetComponent<MeshRenderer>();
+
+        if (mr == nullptr)
+        {
+            return;
+        }
+
+        mRenderQueue.Push(mr);
     }
 
     Instance* Scene::GetInstance(unsigned int index) const
@@ -78,8 +86,13 @@ namespace Mydx
                 case FORWARD:
                     inst->DrawForward(viewport->GetImage(), viewport->GetDepth(), viewport);
                     break;
+                default:
+                    break;
             }
+            mRenderQueue.Push(inst);
         }
+       
+
 
     }
 }

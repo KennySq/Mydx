@@ -6,30 +6,32 @@ namespace Mydx
 {
 	Camera::Camera(XMVECTOR position, float fov, float aspectRatio, Viewport* viewport) : mViewport(viewport)
 	{
+		float newFov = XMConvertToRadians(fov);
+
 		XMMATRIX view = XMMatrixLookAtLH(position,
 										 position - XMVectorSet(1.0f, 0.0f, 0.0f, 1.0f),
 										 XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 
-		XMMATRIX projection = XMMatrixPerspectiveFovLH(fov, aspectRatio, 0.01f, 1000.0f);
+		XMMATRIX projection = XMMatrixPerspectiveFovLH(newFov, aspectRatio, 0.01f, 1000.0f);
 
-		XMStoreFloat4x4(&mRaw.mView, view);
-		XMStoreFloat4x4(&mRaw.mProjection, projection);
-
-
+		XMStoreFloat4x4(&mRaw.mView, XMMatrixTranspose(view));
+		XMStoreFloat4x4(&mRaw.mProjection, XMMatrixTranspose(projection));
 
 		Generate();
 	}
 
 	Camera::Camera(float px, float py, float pz, float fov, float aspectRatio, Viewport* viewport) : mViewport(viewport)
 	{
+		float newFov = XMConvertToRadians(fov);
+
 		XMMATRIX view = XMMatrixLookAtLH(XMVectorSet(px, py, pz, 1.0f),
 										 XMVectorSet(px - 1.0f, py, pz, 1.0f),
 										 XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f));
 
-		XMMATRIX projection = XMMatrixPerspectiveFovLH(fov, aspectRatio, 0.01f, 1000.0f);
+		XMMATRIX projection = XMMatrixPerspectiveFovLH(newFov, aspectRatio, 0.01f, 1000.0f);
 
-		XMStoreFloat4x4(&mRaw.mView, view);
-		XMStoreFloat4x4(&mRaw.mProjection, projection);
+		XMStoreFloat4x4(&mRaw.mView, XMMatrixTranspose(view));
+		XMStoreFloat4x4(&mRaw.mProjection, XMMatrixTranspose(projection));
 
 		Generate();
 

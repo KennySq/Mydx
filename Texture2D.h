@@ -9,7 +9,8 @@ namespace Mydx
 	typedef struct Texture2D : IMemory
 	{
 
-		void ClearTexture(DirectX::XMVECTORF32 clearColor);
+		void ClearRenderTarget(DirectX::XMVECTORF32 clearColor);
+		void ClearDepthStencil();
 
 		inline unsigned int GetWidth() const { mTextureDesc.Width; }
 		inline unsigned int GetHeight() const { mTextureDesc.Height; }
