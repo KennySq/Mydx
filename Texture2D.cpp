@@ -57,7 +57,7 @@ namespace Mydx
 
 		if (bind & D3D11_BIND_UNORDERED_ACCESS)
 		{
-			auto result = device->CreateUnorderedAccessView(mTexture.Get(), &mUnordredAccessDesc, mUnorderedAccess.GetAddressOf());
+			auto result = device->CreateUnorderedAccessView(mTexture.Get(), &mUnorderedAccessDesc, mUnorderedAccess.GetAddressOf());
 			assert(result == S_OK);
 
 			if (result != S_OK)
@@ -131,7 +131,7 @@ namespace Mydx
 		context->ClearDepthStencilView(mDepthStencil.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
-	Texture2D::Texture2D(D3D11_TEXTURE2D_DESC& texDesc, bool bSwapChain) : mTextureDesc(texDesc), mDepthStencilDesc(), mUnordredAccessDesc(), mRenderTargetDesc(), mShaderResourceDesc()
+	Texture2D::Texture2D(D3D11_TEXTURE2D_DESC& texDesc, bool bSwapChain) : mTextureDesc(texDesc), mDepthStencilDesc(), mUnorderedAccessDesc(), mRenderTargetDesc(), mShaderResourceDesc()
 	{
 		mRenderTargetDesc.Format = texDesc.Format;
 		mRenderTargetDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
@@ -139,8 +139,8 @@ namespace Mydx
 		mDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		mDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 
-		mUnordredAccessDesc.Format = texDesc.Format;
-		mUnordredAccessDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+		mUnorderedAccessDesc.Format = texDesc.Format;
+		mUnorderedAccessDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 
 		mShaderResourceDesc.Format = texDesc.Format;
 		mShaderResourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
@@ -154,6 +154,19 @@ namespace Mydx
 			generateFromSwapChain();
 		}
 
+		generateViews();
+	}
+
+	Texture2D::Texture2D(const Texture2D& rhs)
+	{
+		ID3D11Device* device = HW::GetDevice();
+
+		mTextureDesc = rhs.mTextureDesc;
+		mDepthStencilDesc = rhs.mDepthStencilDesc;
+		mShaderResourceDesc = rhs.mShaderResourceDesc;
+		mUnorderedAccessDesc = rhs.mUnorderedAccessDesc;
+
+		Generate();
 		generateViews();
 	}
 

@@ -54,7 +54,6 @@ namespace Mydx
 		subData.pSysMem = &mRaw;
 
 		result = device->CreateBuffer(&bufferDesc, &subData, mBuffer.GetAddressOf());
-		assert(result == S_OK);
 		if (result != S_OK)
 		{
 			return false;
