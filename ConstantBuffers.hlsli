@@ -1,3 +1,5 @@
+#include"Lights.hlsli"
+
 cbuffer CameraBuffer : register(b0)
 {
     row_major matrix gView;
@@ -11,5 +13,5 @@ cbuffer Instance : register(b1)
 
 cbuffer LightBuffer : register(b2)
 {
-    
+    DirectionalLight gDirectionalLights[80]; // 2,880 byte
 }
