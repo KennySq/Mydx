@@ -17,4 +17,7 @@
 #include"MeshRenderer.h"
 
 #include"Instance.h"
+
+#include"DirectionalLight.h"
+
 #include"Scene.h"

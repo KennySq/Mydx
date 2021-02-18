@@ -2,8 +2,14 @@
 
 cbuffer CameraBuffer : register(b0)
 {
-    row_major matrix gView;
-    row_major matrix gProjection;
+    matrix gView;
+    matrix gProjection;
+    
+    float4 gViewForward;
+    float4 gViewUp;
+    float4 gViewRight;
+
+    float4 gViewPosition;
 }
 
 cbuffer Instance : register(b1)

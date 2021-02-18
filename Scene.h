@@ -7,11 +7,15 @@ namespace Mydx
 	class MeshRenderer;
 	class Instance;
 	class Camera;
+	class DirectionalLight;
 	class Scene
 	{
 	public:
 		void AddInstance(Instance* instance);
 		Instance* GetInstance(unsigned int index) const;
+
+		void AddDirectionalLight(DirectionalLight* light);
+		DirectionalLight* GetDirectionalLight(unsigned int index) const;
 
 		Camera* GetCamera() const { return mSelectedCamera; }
 	
@@ -33,6 +37,7 @@ namespace Mydx
 
 		vector<Instance*> mInstances;
 		vector<MeshRenderer*> mRenderInstances;
+		vector<DirectionalLight*> mDirectionalLights;
 
 		RenderQueue mRenderQueue;
 

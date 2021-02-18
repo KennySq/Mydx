@@ -28,7 +28,7 @@ namespace Mydx
 		DirectionalLight(const DirectionalLight& rhs);
 		~DirectionalLight();
 
-		ID3D11Buffer* AsBuffer() const { mBuffer.Get(); }
+		ID3D11Buffer* AsBuffer() const { return mBuffer.Get(); }
 
 	private:
 		ComPtr<ID3D11Buffer> mBuffer;

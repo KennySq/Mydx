@@ -8,6 +8,8 @@
 #include"Camera.h"
 #include"Renderer.h"
 
+#include"DirectionalLight.h"
+
 namespace Mydx
 {
     void Scene::AddInstance(Instance* instance)
@@ -36,6 +38,23 @@ namespace Mydx
         }
 
         return mInstances[index];
+    }
+    void Scene::AddDirectionalLight(DirectionalLight* light)
+    {
+        if (light == nullptr)
+        {
+            return;
+        }
+
+        mDirectionalLights.push_back(light);
+    }
+    DirectionalLight* Scene::GetDirectionalLight(unsigned int index) const
+    {
+        if (index < 0 || index >= mDirectionalLights.size())
+        {
+            return nullptr;
+        }
+        return mDirectionalLights[index];
     }
     void Scene::Init()
     {
@@ -67,6 +86,8 @@ namespace Mydx
         static Renderer2D& r2d = Renderer2D::GetInstance();
         size_t renderCount = mRenderQueue.GetCount();
         Viewport* viewport = mSelectedCamera->GetViewport();
+
+        mSelectedCamera->Update();
 
         for (int i = 0; i < renderCount; i++)
         {

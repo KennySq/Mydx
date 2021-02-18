@@ -1,6 +1,6 @@
-
 #include"ConstantBuffers.hlsli"
 #include"Diffuse.hlsli"
+#include"Reflection.hlsli"
 
 struct VertexInput
 {
@@ -44,5 +44,10 @@ float4 SamplePS(PixelInput input) : SV_Target0
     float4 normal = input.mNormal;
     float2 uv = input.mTexcoord;
     
-    return position;
+    float fr = FresnelDieelectric(normal, gViewForward, gDirectionalLights[0], 1.5f);
+    
+   // normal = normalize(normal);
+    
+    return fr;
+
 }

@@ -62,6 +62,13 @@ bool Pass::compile()
 		string str = string(mEntry) + "VS";
 		
 		result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, str.c_str(), "vs_5_0", compileFlag, 0, &vBlob, &errBlob);
+#ifdef _DEBUG
+		if (result != S_OK)
+		{
+			std::cout << (const char*)errBlob->GetBufferPointer() << std::endl;
+		}
+#endif
+		
 		assert(result == S_OK);
 
 		if (result != S_OK)

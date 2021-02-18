@@ -18,11 +18,18 @@ namespace Mydx
 		Camera(float px, float py, float pz, float fov, float aspectRatio, Viewport* viewport);
 		~Camera();
 
+		virtual bool Update() override;
+
 	private:
 		struct CameraBuffer
 		{
 			XMFLOAT4X4 mView;
 			XMFLOAT4X4 mProjection;
+			XMFLOAT4 mForward;
+			XMFLOAT4 mUp;
+			XMFLOAT4 mRight;
+
+			XMFLOAT4 mPosition;
 		};
 
 		Viewport* mViewport;
