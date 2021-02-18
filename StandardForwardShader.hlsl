@@ -2,6 +2,10 @@
 #include"Diffuse.hlsli"
 #include"Reflection.hlsli"
 
+SamplerState defaultSampler : register(s0);
+
+TextureCube<float4> sampleCubemap : register(t0);
+
 struct VertexInput
 {
     float4 mPosition : POSITION0;
@@ -12,6 +16,7 @@ struct VertexInput
 struct PixelInput
 {
     float4 mPosition : SV_Position;
+    float4 mLocalPosition : POSITION0;
     float4 mNormal : TEXCOORD0;
     float2 mTexcoord : TEXCOORD1;
 };
@@ -21,6 +26,7 @@ PixelInput SampleVS(VertexInput input)
     PixelInput output = (PixelInput) 0;
     
     input.mPosition.w = 1.0f;
+    
     
     float4 world = mul(input.mPosition, gWorld);
     float4 view = mul(world, gView);
@@ -34,6 +40,7 @@ PixelInput SampleVS(VertexInput input)
     output.mPosition = projection;
     output.mNormal = normal;
     output.mTexcoord = uv;
+    output.mLocalPosition = input.mPosition;
     
     return output;
 }
@@ -46,8 +53,14 @@ float4 SamplePS(PixelInput input) : SV_Target0
     
     float fr = FresnelDieelectric(normal, gViewForward, gDirectionalLights[0], 1.5f);
     
+    float4 reflected = reflect(normal, gViewForward);
+    
    // normal = normalize(normal);
     
-    return fr;
+    float diffuse = dot(normal, gDirectionalLights[0].mDirection);
+    
+    float4 cube = sampleCubemap.Sample(defaultSampler, input.mLocalPosition.xyz);
+    
+    return cube * diffuse;
 
 }

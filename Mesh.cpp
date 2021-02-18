@@ -1,43 +1,54 @@
 #include"pch.h"
 #include"Mesh.h"
 
-bool Mydx::Mesh::Generate()
+namespace Mydx
 {
-	
 
-	return true;
-}
-
-void Mydx::Mesh::Release()
-{}
-
-Mydx::Mesh::Mesh(eMeshType meshType, eVertexType vertexType) : mMeshType(meshType), mVertexType(vertexType)
-{
-	switch (vertexType)
+	bool Mesh::Generate()
 	{
-		case eVertexType::STATIC:
-			mStride = sizeof(StaticVertex);
-			break;
+
+
+		return true;
+	}
+
+	void Mesh::Release()
+	{}
+
+	Mesh::Mesh(eMeshType meshType, eVertexType vertexType) : mMeshType(meshType), mVertexType(vertexType)
+	{
+		switch (vertexType)
+		{
+			case eVertexType::STATIC:
+				mStride = sizeof(StaticVertex);
+				break;
+
+		}
+
+		mOffset = 0;
 
 	}
 
-	mOffset = 0;
+	Mesh::Mesh(const Mesh& rhs)
+	{
+		mVertexBuffer = rhs.mVertexBuffer;
+		mIndexBuffer = rhs.mIndexBuffer;
 
-}
+		mVertexCount = rhs.mVertexCount;
+		mIndexCount = rhs.mIndexCount;
 
-Mydx::Mesh::Mesh(const Mesh& rhs)
-{
-	mVertexBuffer = rhs.mVertexBuffer;
-	mIndexBuffer = rhs.mIndexBuffer;
+		mStride = rhs.mStride;
+		mOffset = rhs.mOffset;
+	}
 
-	mVertexCount = rhs.mVertexCount;
-	mIndexCount = rhs.mIndexCount;
+	Mesh::~Mesh()
+	{
 
-	mStride = rhs.mStride;
-	mOffset = rhs.mOffset;
-}
+	}
 
-Mydx::Mesh::~Mesh()
-{
+	bool Mesh::Load(const char* path)
+	{
 
+
+		return true;
+	}
 }

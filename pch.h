@@ -15,14 +15,18 @@
 #include<vector>
 #include<unordered_map>
 #include<memory>
+#include<atlbase.h>
 
 #include<wrl.h>
 
 #include<d3d11.h>
 #include<d3dcompiler.h>
 #include<dxgi.h>
+
 #include<DirectXMath.h>
 #include<DirectXColors.h>
+
+#include<DDSTextureLoader.h>
 
 #include"Hardware.h"
 
@@ -31,5 +35,7 @@
 #pragma comment(lib, "d3d11.lib")
 #pragma comment(lib, "dxgi.lib")
 #pragma comment(lib, "d3dcompiler.lib")
-
+#pragma comment(lib, "DXUT.lib")
+#pragma comment(lib, "dxguid.lib")
+#pragma comment(lib, "comctl32.lib")
 #endif //PCH_H

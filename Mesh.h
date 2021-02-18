@@ -1,10 +1,11 @@
 #pragma once
 #include"IMemory.h"
+#include"IFile.h"
 #include"eMeshType.h"
 #include"Vertices.h"
 namespace Mydx
 {
-	struct Mesh : IMemory
+	struct Mesh : IMemory, IFile
 	{
 		virtual bool Generate() override;
 		virtual void Release() override;
@@ -25,7 +26,7 @@ namespace Mydx
 		friend class PrimitiveGenerator;
 
 	private:
-
+	
 		ComPtr<ID3D11Buffer> mVertexBuffer;
 		ComPtr<ID3D11Buffer> mIndexBuffer;
 
@@ -37,6 +38,10 @@ namespace Mydx
 
 		eMeshType mMeshType;
 		eVertexType mVertexType;
+
+
+		// IFile을(를) 통해 상속됨
+		virtual bool Load(const char* path) override;
 
 	};
 }

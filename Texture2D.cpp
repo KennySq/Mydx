@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "Texture2D.h"
 #include"Hardware.h"
-
+using namespace DirectX;
 namespace Mydx
 {
 	bool Texture2D::generateFromSwapChain()
@@ -105,6 +105,26 @@ namespace Mydx
 			mUnorderedAccess->Release();
 	}
 
+	bool Texture2D::Load(const char* path)
+	{
+		USES_CONVERSION;
+
+		HRESULT result;
+		ID3D11Device* device = HW::GetDevice();
+		ID3D11Resource* resource = reinterpret_cast<ID3D11Resource*>(mShaderResource.Get());
+
+	
+		result = CreateDDSTextureFromFile(device, A2W(path), &resource, mShaderResource.GetAddressOf());
+		if (result != S_OK)
+		{
+		#ifdef _DEBUG
+			std::cout << "CreateDDSTextureFromFile" << std::endl;
+		#endif
+		}
+		
+		return true;
+	}
+
 	void Texture2D::ClearRenderTarget(DirectX::XMVECTORF32 clearColor)
 	{
 		if (mRenderTarget == nullptr)
@@ -131,19 +151,29 @@ namespace Mydx
 		context->ClearDepthStencilView(mDepthStencil.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 	}
 
-	Texture2D::Texture2D(D3D11_TEXTURE2D_DESC& texDesc, bool bSwapChain) : mTextureDesc(texDesc), mDepthStencilDesc(), mUnorderedAccessDesc(), mRenderTargetDesc(), mShaderResourceDesc()
+	Texture2D::Texture2D(D3D11_TEXTURE2D_DESC& texDesc, bool bSwapChain, bool bCubemap)
+		: mTextureDesc(texDesc), mDepthStencilDesc(), mUnorderedAccessDesc(), mRenderTargetDesc(), mShaderResourceDesc()
 	{
 		mRenderTargetDesc.Format = texDesc.Format;
 		mRenderTargetDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 		
 		mDepthStencilDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 		mDepthStencilDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
-
+		
 		mUnorderedAccessDesc.Format = texDesc.Format;
 		mUnorderedAccessDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
 
 		mShaderResourceDesc.Format = texDesc.Format;
 		mShaderResourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+		
+		if (bCubemap == true)
+		{
+			mTextureDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+			mShaderResourceDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+			mShaderResourceDesc.TextureCube.MipLevels = 1;
+			mShaderResourceDesc.TextureCube.MostDetailedMip = 0;
+
+		}
 
 		if (bSwapChain == false)
 		{
@@ -153,6 +183,8 @@ namespace Mydx
 		{
 			generateFromSwapChain();
 		}
+
+
 
 		generateViews();
 	}
@@ -168,6 +200,11 @@ namespace Mydx
 
 		Generate();
 		generateViews();
+	}
+
+	Texture2D::Texture2D(const char* path)
+	{
+		Load(path);
 	}
 
 	Texture2D::~Texture2D()

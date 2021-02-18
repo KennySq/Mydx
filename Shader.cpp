@@ -1,6 +1,6 @@
 #include"pch.h"
 #include"Shader.h"
-#include<atlbase.h>
+
 
 bool Pass::Generate()
 {
