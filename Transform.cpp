@@ -3,9 +3,32 @@
 
 namespace Mydx
 {
+	void Transform::Translate(float x, float y, float z)
+	{
+		XMMATRIX mat = XMLoadFloat4x4(&mTransform);
+		XMMATRIX translate = XMMatrixIdentity();
 
-	void Mydx::Transform::SetScale(float x, float y, float z)
+		translate.r[3].m128_f32[0] = x;
+		translate.r[3].m128_f32[1] = y;
+		translate.r[3].m128_f32[2] = z;
+
+		mat *= translate;
+
+		XMStoreFloat4x4(&mTransform, XMMatrixTranspose(mat));
+		Update();
+
+		return;
+	}
+	void Transform::Rotate(float x, float y, float z)
 	{}
+	void Transform::SetScale(float x, float y, float z)
+	{
+		mTransform._11 = x;
+		mTransform._22 = y;
+		mTransform._33 = z;
+
+		Update();
+	}
 
 	Transform::Transform()
 	{
@@ -62,6 +85,15 @@ namespace Mydx
 		{
 			return false;
 		}
+
+		return true;
+	}
+
+	bool Transform::Update()
+	{
+		static ID3D11DeviceContext* context = HW::GetContext();
+
+		context->UpdateSubresource(mBuffer.Get(), 0, nullptr, &mTransform, 0, 0);
 
 		return true;
 	}

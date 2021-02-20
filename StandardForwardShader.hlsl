@@ -54,13 +54,11 @@ float4 SamplePS(PixelInput input) : SV_Target0
     float fr = FresnelDieelectric(normal, gViewForward, gDirectionalLights[0], 1.5f);
     
     float4 reflected = reflect(normal, gViewForward);
-    
-   // normal = normalize(normal);
-    
-    float diffuse = dot(normal, gDirectionalLights[0].mDirection);
+    normal = normalize(normal);
+    float diffuse = dot(normal, normalize(gDirectionalLights[0].mDirection));
     
     float4 cube = sampleCubemap.Sample(defaultSampler, input.mLocalPosition.xyz);
     
-    return cube * diffuse;
+    return cube;
 
 }

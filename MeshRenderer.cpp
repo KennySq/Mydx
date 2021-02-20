@@ -87,7 +87,7 @@ namespace Mydx
 		mContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 		
 		mContext->DrawIndexed(mMesh->GetIndexCount(), 0, 0);
-
+		mContext->ClearState();
 	}
 	void MeshRenderer::bindPass()
 	{

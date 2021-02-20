@@ -44,9 +44,12 @@ namespace Mydx
 		ComPtr<ID3D11DomainShader> mDS;
 		ComPtr<ID3D11HullShader> mHS;
 		ComPtr<ID3D11PixelShader> mPS;
+		ComPtr<ID3D11ShaderReflection> mReflection;
 
 		bool compile();
 		bool reflect(ID3DBlob* vertexBlob, ID3D11InputLayout** pInputLayout, ID3D11ShaderReflection** pReflection);
+		bool reflectRegisters();
+	
 	};
 
 	template<typename _BufTy>

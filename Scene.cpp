@@ -67,6 +67,7 @@ namespace Mydx
     }
     void Scene::Update(float delta)
     {
+        
         renderScene();
     }
     void Scene::Render(float delta)
@@ -92,7 +93,6 @@ namespace Mydx
         for (int i = 0; i < renderCount; i++)
         {
             MeshRenderer* inst = mRenderQueue.Pop();
-
             Pass* pass = inst->GetPass();
             
             eRenderType type = pass->GetRenderType();

@@ -14,6 +14,7 @@ namespace Mydx
 		void SetScale(float x, float y, float z);
 
 		ID3D11Buffer* GetBuffer() const { return mBuffer.Get(); }
+		virtual bool Update() override;
 
 		Transform();
 		Transform(XMVECTOR position, XMVECTOR rotation, XMVECTOR scale);
@@ -31,7 +32,6 @@ namespace Mydx
 
 		// IMemory을(를) 통해 상속됨
 		virtual bool Generate() override;
-
 		virtual void Release() override;
 
 	};
