@@ -1,10 +1,11 @@
 #pragma once
 #include"IMemory.h"
-
+#include"Transform.h"
 using namespace DirectX;
 
 namespace Mydx
 {
+
 	struct DirectionalLightData
 	{
 		XMFLOAT4 mDirection;
@@ -20,6 +21,7 @@ namespace Mydx
 			: mDirection(direction), mColor(color), mIntensity(intensity) { }
 	};
 
+	class Transform;
 	class DirectionalLight : IMemory
 	{
 	public:
@@ -29,8 +31,12 @@ namespace Mydx
 		~DirectionalLight();
 
 		ID3D11Buffer* AsBuffer() const { return mBuffer.Get(); }
+		Transform* GetTransform() { return &mTransform; }
+
 
 	private:
+		Transform mTransform;
+
 		ComPtr<ID3D11Buffer> mBuffer;
 		DirectionalLightData mRaw;
 

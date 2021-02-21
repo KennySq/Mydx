@@ -22,6 +22,8 @@ namespace Mydx
 		Transform(float px, float py, float pz, float rx, float ry, float rz, float sx, float sy, float sz);
 		~Transform();
 
+		Transform operator=(const XMMATRIX& rhs);
+
 	private:
 		XMFLOAT4X4 mTransform;
 		XMFLOAT4 mPosition;

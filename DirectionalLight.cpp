@@ -5,6 +5,12 @@ namespace Mydx
 {
 	DirectionalLight::DirectionalLight()
 	{
+		mTransform = XMMatrixIdentity();
+
+		XMMATRIX look = XMMatrixLookAtLH(XMVectorSet(0, 0, 0, 1), XMVectorSet(5, 5, 0, 1), XMVectorSet(0, 1, 0, 0));
+
+		mTransform = look;
+
 		XMVECTOR direction = XMVectorSet(0, 0, 0, 1) - XMVectorSet(5, 5, 0, 1);
 		XMVECTOR color = Colors::White;
 		float intensity = 1;
@@ -19,6 +25,12 @@ namespace Mydx
 	DirectionalLight::DirectionalLight(XMFLOAT4 direction, XMVECTORF32 color, float intensity)
 		: mRaw(direction, color, intensity)
 	{
+		mTransform = XMMatrixLookToLH(XMVectorSet(0, 0, 0, 1),
+									  XMVectorSet(direction.x, direction.y, direction.z, direction.z),
+									  XMVectorSet(0, 1, 0, 1));
+
+
+
 		Generate();
 	}
 

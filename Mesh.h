@@ -5,12 +5,14 @@
 #include"Vertices.h"
 namespace Mydx
 {
+	class MeshLoader;
 	struct Mesh : IMemory, IFile
 	{
 		virtual bool Generate() override;
 		virtual void Release() override;
 
 		Mesh(eMeshType meshType, eVertexType vertexType);
+
 		Mesh(const Mesh& rhs);
 		~Mesh();
 
@@ -24,7 +26,7 @@ namespace Mydx
 		
 
 		friend class PrimitiveGenerator;
-
+		friend class MeshLoader;
 	private:
 	
 		ComPtr<ID3D11Buffer> mVertexBuffer;

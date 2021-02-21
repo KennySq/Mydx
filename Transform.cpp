@@ -51,6 +51,11 @@ namespace Mydx
 
 	Mydx::Transform::Transform(const Transform& rhs) : mPosition(rhs.mPosition), mRotation(rhs.mRotation), mScale(rhs.mScale), mTransform(rhs.mTransform)
 	{
+		if (mBuffer != nullptr)
+		{
+			mBuffer->Release();
+		}
+
 		Generate();
 	}
 
@@ -96,6 +101,13 @@ namespace Mydx
 		context->UpdateSubresource(mBuffer.Get(), 0, nullptr, &mTransform, 0, 0);
 
 		return true;
+	}
+
+	Transform Transform::operator=(const XMMATRIX& rhs)
+	{
+		XMStoreFloat4x4(&mTransform, rhs);
+
+		return *this;
 	}
 
 	void Transform::Release()

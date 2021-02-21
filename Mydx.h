@@ -9,6 +9,7 @@
 #include"Texture2D.h"
 
 #include"PrimitiveGenerator.h"
+#include"MeshLoader.h"
 #include"Mesh.h"
 
 #include"Camera.h"

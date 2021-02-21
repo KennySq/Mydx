@@ -234,6 +234,7 @@ namespace Mydx
 		mReflection->GetResourceBindingDesc(0, &varDesc);
 		
 
+
 		return true;
 	}
 
