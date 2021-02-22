@@ -184,8 +184,6 @@ namespace Mydx
 			generateFromSwapChain();
 		}
 
-
-
 		generateViews();
 	}
 

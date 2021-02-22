@@ -3,6 +3,7 @@
 #include"IMemory.h"
 #include"ePassType.h"
 #include"eRenderType.h"
+#include"ShaderReflection.h"
 
 using namespace Microsoft::WRL;
 using namespace Mydx;
@@ -12,7 +13,10 @@ namespace Mydx
 	struct Pass : IMemory
 	{
 		
-		// IMemory을(를) 통해 상속됨
+		bool SetTexture(const char* variable, ID3D11ShaderResourceView* resource);
+		bool SetSampler(const char* variable, ID3D11SamplerState* sampler);
+		bool SetConstant(unsigned int index);
+
 		virtual bool Generate() override;
 		virtual void Release() override;
 
@@ -28,7 +32,7 @@ namespace Mydx
 		Pass(const char* path, const char* entry, unsigned long passType, unsigned long renderType);
 		~Pass();
 
-	
+		
 
 	private:
 		const char* mPath;
@@ -44,11 +48,11 @@ namespace Mydx
 		ComPtr<ID3D11DomainShader> mDS;
 		ComPtr<ID3D11HullShader> mHS;
 		ComPtr<ID3D11PixelShader> mPS;
-		ComPtr<ID3D11ShaderReflection> mReflection;
+
+		unordered_map<size_t, ID3D11ShaderResourceView*> mTextures; // 8
+		unordered_map<size_t, ID3D11SamplerState*> mSamplers; // 16
 
 		bool compile();
-		bool reflect(ID3DBlob* vertexBlob, ID3D11InputLayout** pInputLayout, ID3D11ShaderReflection** pReflection);
-		bool reflectRegisters();
 	
 	};
 

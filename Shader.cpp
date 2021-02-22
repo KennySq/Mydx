@@ -3,7 +3,38 @@
 
 namespace Mydx
 {
+	bool Pass::SetTexture(const char* variable, ID3D11ShaderResourceView* resource)
+	{
+		if (resource == nullptr)
+		{
+			return false;
+		}
 
+		size_t hash = MakeHash<const char*>(variable);
+
+		mTextures.insert_or_assign(hash, resource);
+
+		return true;
+	}
+	bool Pass::SetSampler(const char* variable, ID3D11SamplerState* sampler)
+	{
+		if (sampler == nullptr)
+		{
+			return false;
+		}
+
+		size_t hash = MakeHash<const char*>(variable);
+
+		mSamplers.insert_or_assign(hash, sampler);
+
+		return true;
+	}
+	bool Pass::SetConstant(unsigned int index)
+	{
+
+
+		return true;
+	}
 	bool Pass::Generate()
 	{
 		if (bCompiled == true)
@@ -75,7 +106,14 @@ namespace Mydx
 			if (result != S_OK)
 				return false;
 
-			reflect(vBlob, mIL.GetAddressOf(), mReflection.GetAddressOf());
+			ShaderReflection reflect(vBlob);
+
+			result = device->CreateInputLayout(reflect.mInputElements.data(),
+											   reflect.mInputElements.size(),
+											   vBlob->GetBufferPointer(),
+											   vBlob->GetBufferSize(),
+											   mIL.GetAddressOf());
+
 
 			result = device->CreateVertexShader(vBlob->GetBufferPointer(), vBlob->GetBufferSize(), nullptr, mVS.GetAddressOf());
 			assert(result == S_OK);
@@ -150,90 +188,6 @@ namespace Mydx
 
 		if (result != S_OK)
 			return false;
-
-		return true;
-	}
-
-	bool Mydx::Pass::reflect(ID3DBlob* vertexBlob, ID3D11InputLayout** pInputLayout, ID3D11ShaderReflection** pReflection)
-	{
-		HRESULT result;
-
-		auto device = HW::GetDevice();
-
-		result = D3DReflect(vertexBlob->GetBufferPointer(), vertexBlob->GetBufferSize(), __uuidof(ID3D11ShaderReflection), (void**)pReflection);
-		assert(result == S_OK);
-		if (result != S_OK)
-			return false;
-
-		unsigned int byteOffset = 0;
-		D3D11_SHADER_DESC shaderDesc{};
-		vector<D3D11_INPUT_ELEMENT_DESC> inputElements;
-		D3D11_SIGNATURE_PARAMETER_DESC signParam;
-		pReflection[0]->GetDesc(&shaderDesc);
-		for (unsigned int i = 0; i < shaderDesc.InputParameters; i++)
-		{
-			pReflection[0]->GetInputParameterDesc(i, &signParam);
-
-			D3D11_INPUT_ELEMENT_DESC element;
-
-			element.SemanticName = signParam.SemanticName;
-			element.SemanticIndex = signParam.SemanticIndex;
-			element.InputSlot = 0;
-			element.AlignedByteOffset = byteOffset;
-			element.InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-			element.InstanceDataStepRate = 0;
-
-			if (signParam.Mask == 1)
-			{
-				if (signParam.ComponentType == D3D_REGISTER_COMPONENT_UINT32) element.Format = DXGI_FORMAT_R32_UINT;
-				else if (signParam.ComponentType == D3D_REGISTER_COMPONENT_SINT32) element.Format = DXGI_FORMAT_R32_SINT;
-				else if (signParam.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) element.Format = DXGI_FORMAT_R32_FLOAT;
-
-				byteOffset += 4;
-			}
-			else if (signParam.Mask <= 3)
-			{
-				if (signParam.ComponentType == D3D_REGISTER_COMPONENT_UINT32) element.Format = DXGI_FORMAT_R32G32_UINT;
-				else if (signParam.ComponentType == D3D_REGISTER_COMPONENT_SINT32) element.Format = DXGI_FORMAT_R32G32_SINT;
-				else if (signParam.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) element.Format = DXGI_FORMAT_R32G32_FLOAT;
-				byteOffset += 8;
-			}
-			else if (signParam.Mask <= 7)
-			{
-				if (signParam.ComponentType == D3D_REGISTER_COMPONENT_UINT32) element.Format = DXGI_FORMAT_R32G32B32_UINT;
-				else if (signParam.ComponentType == D3D_REGISTER_COMPONENT_SINT32) element.Format = DXGI_FORMAT_R32G32B32_SINT;
-				else if (signParam.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) element.Format = DXGI_FORMAT_R32G32B32_FLOAT;
-				byteOffset += 12;
-			}
-
-			else if (signParam.Mask <= 15)
-			{
-				if (signParam.ComponentType == D3D_REGISTER_COMPONENT_UINT32) element.Format = DXGI_FORMAT_R32G32B32A32_UINT;
-				else if (signParam.ComponentType == D3D_REGISTER_COMPONENT_SINT32) element.Format = DXGI_FORMAT_R32G32B32A32_SINT;
-				else if (signParam.ComponentType == D3D_REGISTER_COMPONENT_FLOAT32) element.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
-				byteOffset += 16;
-			}
-
-
-			inputElements.push_back(element);
-		}
-
-		result = device->CreateInputLayout(inputElements.data(), inputElements.size(), vertexBlob->GetBufferPointer(), static_cast<unsigned int>(vertexBlob->GetBufferSize()), pInputLayout);
-		assert(result == S_OK);
-
-		if (result != S_OK)
-			return false;
-
-		return true;
-	}
-
-	bool Pass::reflectRegisters()
-	{
-		D3D11_SHADER_INPUT_BIND_DESC varDesc{};
-		
-		mReflection->GetResourceBindingDesc(0, &varDesc);
-		
-
 
 		return true;
 	}

@@ -1,4 +1,7 @@
 #pragma once
+#include<functional>
+
+using namespace std;
 
 namespace Mydx
 {
@@ -20,5 +23,12 @@ namespace Mydx
 		static unsigned long long cid = -1;
 
 		return ++cid;
+	}
+	template<typename T>
+	inline unsigned long long MakeHash(T val)
+	{
+		hash<T> h;
+		unsigned long long v = h(val);
+		return v;
 	}
 }
