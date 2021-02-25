@@ -1,10 +1,11 @@
+#include"ConstantBuffers.hlsli"
 #include"Diffuse.hlsli"
 #include"Reflection.hlsli"
 
 SamplerState defaultSampler : register(s0);
 SamplerState cubemapSampler : register(s1);
 
-TextureCube<float4> sampleCubemap : register(t0);
+TextureCube sampleCubemap : register(t0);
 
 
 struct VertexInput

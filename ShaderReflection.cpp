@@ -11,8 +11,7 @@ namespace Mydx
 		mReflection->GetDesc(&mShader);
 
 		reflectInputLayout();
-		reflectConstantBuffers();
-		reflectTextures();
+		reflectBoundResources();
 
 
 	}
@@ -79,40 +78,7 @@ namespace Mydx
 		return true;
 	}
 
-	bool ShaderReflection::reflectConstantBuffers()
-	{
-		unsigned int cbuffer = mShader.ConstantBuffers;
-
-		for (unsigned int i = 0; i < cbuffer; i++)
-		{
-			D3D11_SHADER_BUFFER_DESC bufferDesc{};
-			ID3D11ShaderReflectionConstantBuffer* cbuffer = mReflection->GetConstantBufferByIndex(i);
-
-			mConstantBufers.emplace_back(cbuffer);
-			cbuffer->GetDesc(&bufferDesc);
-
-			unsigned int constVariableCount = bufferDesc.Variables;
-
-			for (unsigned int j = 0; j < constVariableCount; j++)
-			{
-				ID3D11ShaderReflectionVariable* variable;
-				variable = cbuffer->GetVariableByIndex(j);
-				if (variable == nullptr)
-				{
-					break;
-				}
-
-				mConstantBufferVariables.emplace_back(variable);
-
-
-			}
-		}
-
-
-		return true;
-	}
-
-	bool ShaderReflection::reflectTextures()
+	bool ShaderReflection::reflectBoundResources()
 	{
 		unsigned int resource = mShader.BoundResources;
 
@@ -121,10 +87,16 @@ namespace Mydx
 			D3D11_SHADER_INPUT_BIND_DESC inputDesc;
 
 			mReflection->GetResourceBindingDesc(i, &inputDesc);
+			
+
 
 			mTextures.emplace_back(inputDesc);
-			
+
 		}
+		D3D11_SHADER_INPUT_BIND_DESC cubeDesc;
+		mReflection->GetResourceBindingDescByName("sampleCubemap", &cubeDesc);
+			
+		mTextures.emplace_back(cubeDesc);
 
 		return true;
 	}

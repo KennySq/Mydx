@@ -23,8 +23,7 @@ namespace Mydx
 		vector<ID3D11ShaderReflectionVariable*> mConstantBufferVariables;
 
 		bool reflectInputLayout();
-		bool reflectConstantBuffers();
-		bool reflectTextures();
+		bool reflectBoundResources();
 
 	};
 }
