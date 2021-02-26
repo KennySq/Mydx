@@ -4,12 +4,12 @@
 
 namespace Mydx
 {
-		const shared_ptr<Mesh> PrimitiveGenerator::GenerateSphere(float radius, unsigned int sliceCount, unsigned int stackCount)
+		Mesh* PrimitiveGenerator::GenerateSphere(float radius, unsigned int sliceCount, unsigned int stackCount)
 		{
 			std::vector<StaticVertex> vertices;
 			std::vector<UINT> indices;
 
-			shared_ptr<Mesh> mesh = make_shared<Mesh>(eMeshType::PRIMITIVE, eVertexType::STATIC);
+			Mesh* mesh = new Mesh(eMeshType::PRIMITIVE, eVertexType::STATIC);
 
 			StaticVertex topVertex(0.0f, +radius, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f);
 			StaticVertex bottomVertex(0.0f, -radius, 0.0f, 0.0f, -1.0f, 0.0f, 0.0f, 1.0f);
@@ -108,13 +108,13 @@ namespace Mydx
 				indices.push_back(baseIndex + i + 1);
 			}
 
-			GenerateMeshBuffer<StaticVertex>(vertices, indices, *mesh);
+			generateMeshBuffer<StaticVertex>(vertices, indices, *mesh);
 
 			return mesh;
 		}
 
 		template<typename _VertTy>
-		bool PrimitiveGenerator::GenerateMeshBuffer(std::vector<_VertTy>& vertices, std::vector<UINT>& indices, Mesh& const buffer)
+		bool PrimitiveGenerator::generateMeshBuffer(std::vector<_VertTy>& vertices, std::vector<UINT>& indices, Mesh& const buffer)
 		{
 			HRESULT hresult;
 			ID3D11Device* device = HW::GetDevice();

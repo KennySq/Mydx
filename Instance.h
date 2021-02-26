@@ -21,7 +21,7 @@ namespace Mydx
 		inline Transform* const GetTransform() { return &mTransform; }
 
 		template<typename _Comp>
-		bool AddComponent();
+		_Comp* AddComponent();
 
 		template<typename _Comp>
 		_Comp* GetComponent() const;
@@ -34,14 +34,14 @@ namespace Mydx
 	};
 
 	template<typename _Comp>
-	inline bool Instance::AddComponent()
+	inline _Comp* Instance::AddComponent()
 	{
 		Component* comp = new _Comp();
 
 		comp->SetRoot(this);
 		mComponents.insert_or_assign(typeid(_Comp).hash_code(), comp);
 		
-		return true;
+		return static_cast<_Comp*>(comp);
 	}
 
 	template<typename _Comp>
@@ -51,9 +51,6 @@ namespace Mydx
 
 		Component* comp = mComponents.at(typeHash);
 
-		return dynamic_cast<_Comp*>(comp);
+		return static_cast<_Comp*>(comp);
 	}
-
-
-
 }

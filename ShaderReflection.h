@@ -8,6 +8,7 @@ namespace Mydx
 
 		vector<D3D11_SHADER_VARIABLE_DESC> mVariables;
 		vector<D3D11_SHADER_INPUT_BIND_DESC> mTextures;
+		vector<D3D11_SHADER_INPUT_BIND_DESC> mConstants;
 
 		vector<D3D11_INPUT_ELEMENT_DESC> mInputElements;
 
@@ -19,7 +20,6 @@ namespace Mydx
 
 	private:
 		ComPtr<ID3D11ShaderReflection> mReflection;
-		vector<ID3D11ShaderReflectionConstantBuffer*> mConstantBufers;
 		vector<ID3D11ShaderReflectionVariable*> mConstantBufferVariables;
 
 		bool reflectInputLayout();

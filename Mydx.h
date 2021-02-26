@@ -4,6 +4,7 @@
 #include"IMemory.h"
 
 #include"Hardware.h"
+#include"Precache.h"
 
 #include"Shader.h"
 #include"Texture2D.h"
@@ -22,3 +23,5 @@
 #include"DirectionalLight.h"
 
 #include"Scene.h"
+
+#include"Graphics.h"

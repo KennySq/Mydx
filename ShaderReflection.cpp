@@ -87,16 +87,9 @@ namespace Mydx
 			D3D11_SHADER_INPUT_BIND_DESC inputDesc;
 
 			mReflection->GetResourceBindingDesc(i, &inputDesc);
-			
 
-
-			mTextures.emplace_back(inputDesc);
-
+			mConstants.emplace_back(inputDesc);
 		}
-		D3D11_SHADER_INPUT_BIND_DESC cubeDesc;
-		mReflection->GetResourceBindingDescByName("sampleCubemap", &cubeDesc);
-			
-		mTextures.emplace_back(cubeDesc);
 
 		return true;
 	}

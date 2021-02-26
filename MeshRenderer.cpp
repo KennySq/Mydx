@@ -10,7 +10,7 @@ namespace Mydx
 {
 	MeshRenderer::MeshRenderer() : Component("Mesh Renderer"), mContext(HW::GetContext())
 	{
-
+		Init();
 	}
 
 	MeshRenderer::~MeshRenderer()
@@ -23,7 +23,11 @@ namespace Mydx
 
 	void MeshRenderer::Update(float delta)
 	{
-		mState.Bind();
+		static Transform* transform = mRoot->GetTransform();
+
+		ID3D11Buffer* buffer[] = { transform->GetBuffer() };
+
+		mContext->VSSetConstantBuffers(1, 1, buffer);
 	}
 
 	void MeshRenderer::Render(float delta)

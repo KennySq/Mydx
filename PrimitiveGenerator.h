@@ -7,10 +7,12 @@ namespace Mydx
 	class PrimitiveGenerator
 	{
 	public:
-		static const shared_ptr<Mesh> GenerateSphere(float radius, unsigned int sliceCount, unsigned int stackCount);
+		static Mesh* GenerateSphere(float radius, unsigned int sliceCount, unsigned int stackCount);
 		static const Mesh& GenerateQuad();
 
+
+	private:
 		template<typename _VertTy>
-		static bool GenerateMeshBuffer(std::vector<_VertTy>& vertices, std::vector<UINT>& indices, Mesh& const buffer);
+		static bool generateMeshBuffer(std::vector<_VertTy>& vertices, std::vector<UINT>& indices, Mesh& const buffer);
 	};
 }

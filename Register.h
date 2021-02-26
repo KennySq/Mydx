@@ -11,6 +11,7 @@ namespace Mydx
 
 		Register(ID3D11Buffer* buffer);
 		Register(ID3D11ShaderResourceView* resource);
+		Register() {}
 		~Register();
 
 	private:

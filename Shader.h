@@ -4,19 +4,20 @@
 #include"ePassType.h"
 #include"eRenderType.h"
 #include"ShaderReflection.h"
+#include"RegisterMap.h"
 
 using namespace Microsoft::WRL;
 using namespace Mydx;
 
 namespace Mydx
 {
+	constexpr unsigned int MAX_VERTEX_CONSTANT_REGISTER = 15;
+	constexpr unsigned int MAX_VERTEX_TEXTURE_REGISTER = 128;
+	constexpr unsigned int MAX_PIXEL_CONSTANT_REGISTER = 15;
+	constexpr unsigned int MAX_PIXEL_TEXTURE_REGISTER = 8;
+
 	struct Pass : IMemory
 	{
-		
-		bool SetTexture(const char* variable, ID3D11ShaderResourceView* resource);
-		bool SetSampler(const char* variable, ID3D11SamplerState* sampler);
-		bool SetConstant(unsigned int index);
-
 		virtual bool Generate() override;
 		virtual void Release() override;
 
@@ -29,12 +30,15 @@ namespace Mydx
 
 		eRenderType GetRenderType() const { return mRenderType; }
 
+		const char* GetName() const { return mName; }
+		
 		Pass(const char* path, const char* entry, unsigned long passType, unsigned long renderType);
 		~Pass();
 
-		
+		bool operator<(const Pass* rhs);
 
 	private:
+		char* mName;
 		const char* mPath;
 		const char* mEntry;
 		unsigned long mPassType;
@@ -49,8 +53,11 @@ namespace Mydx
 		ComPtr<ID3D11HullShader> mHS;
 		ComPtr<ID3D11PixelShader> mPS;
 
-		unordered_map<size_t, ID3D11ShaderResourceView*> mTextures; // 8
-		unordered_map<size_t, ID3D11SamplerState*> mSamplers; // 16
+		RegisterMap mVertexConstRegister;
+		RegisterMap mVertexTextureRegister;
+
+		RegisterMap mPixelConstRegister;
+		RegisterMap mPixelTextureRegister;
 
 		bool compile();
 	

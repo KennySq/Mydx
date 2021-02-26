@@ -16,7 +16,6 @@ cbuffer Instance : register(b1)
 {
     matrix gWorld;
 }
-
 cbuffer LightBuffer : register(b2)
 {
     DirectionalLight gDirectionalLights[80]; // 2,880 byte

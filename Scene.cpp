@@ -58,16 +58,9 @@ namespace Mydx
     }
     void Scene::Init()
     {
-        Renderer2D& r2d = Renderer2D::GetInstance();
-        
-        Texture2D* tex = r2d.GetTexture2D(0);
-        Texture2D* depth = r2d.GetTexture2D(1);
-        Viewport* viewport = new Viewport(tex, depth, 800, 600, 0, 0);
-        mSelectedCamera = new Camera(5.0f, 0.0f, 0.0f, 60.0f, 1.333f, viewport);
     }
     void Scene::Update(float delta)
     {
-        
         renderScene();
     }
     void Scene::Render(float delta)
@@ -79,7 +72,15 @@ namespace Mydx
         
     }
     Scene::Scene(const char* name) : mName(name)
-    {}
+    {
+        Renderer2D& r2d = Renderer2D::GetInstance();
+
+        Texture2D* tex = r2d.GetTexture2D(0);
+        Texture2D* depth = r2d.GetTexture2D(1);
+        Viewport* viewport = new Viewport(tex, depth, 800, 600, 0, 0);
+        mSelectedCamera = new Camera(5.0f, 0.0f, 0.0f, 60.0f, 1.333f, viewport);
+
+    }
     Scene::~Scene()
     {}
     void Scene::renderScene()
@@ -105,6 +106,7 @@ namespace Mydx
             switch (type)
             {
                 case FORWARD:
+                    inst->Update(0.0f);
                     inst->DrawForward(viewport->GetImage(), viewport->GetDepth(), viewport);
                     break;
                 default:

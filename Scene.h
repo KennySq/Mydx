@@ -25,6 +25,7 @@ namespace Mydx
 		void Release();
 
 		Scene(const char* name);
+		// 복사 생성자 필요
 		~Scene();
 
 	private:

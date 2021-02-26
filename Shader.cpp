@@ -3,38 +3,6 @@
 
 namespace Mydx
 {
-	bool Pass::SetTexture(const char* variable, ID3D11ShaderResourceView* resource)
-	{
-		if (resource == nullptr)
-		{
-			return false;
-		}
-
-		size_t hash = MakeHash<const char*>(variable);
-
-		mTextures.insert_or_assign(hash, resource);
-
-		return true;
-	}
-	bool Pass::SetSampler(const char* variable, ID3D11SamplerState* sampler)
-	{
-		if (sampler == nullptr)
-		{
-			return false;
-		}
-
-		size_t hash = MakeHash<const char*>(variable);
-
-		mSamplers.insert_or_assign(hash, sampler);
-
-		return true;
-	}
-	bool Pass::SetConstant(unsigned int index)
-	{
-
-
-		return true;
-	}
 	bool Pass::Generate()
 	{
 		if (bCompiled == true)
@@ -62,16 +30,41 @@ namespace Mydx
 		if (mPS != nullptr)
 			mPS->Release();
 
+		delete[] mName;
+
 	}
 
 	Pass::Pass(const char* path, const char* entry, unsigned long passType, unsigned long renderType)
-		: mPath(path), mEntry(entry), mPassType(passType), mRenderType(static_cast<eRenderType>(renderType))
+		: mPath(path), mEntry(entry), mPassType(passType), mRenderType(static_cast<eRenderType>(renderType)),
+		mVertexConstRegister(MAX_VERTEX_CONSTANT_REGISTER),
+		mVertexTextureRegister(MAX_VERTEX_TEXTURE_REGISTER),
+		mPixelConstRegister(MAX_PIXEL_CONSTANT_REGISTER),
+		mPixelTextureRegister(MAX_PIXEL_TEXTURE_REGISTER)
 	{
+		string local = mPath;
+		auto index = local.find_last_of('/') + 1;
+
+		local = local.substr(index);
+
+		mName = new char[local.size() + 1];
+
+		strcpy(mName, local.c_str());
+
 		Generate();
 	}
 
 	Pass::~Pass()
 	{}
+
+	bool Pass::operator<(const Pass* rhs)
+	{
+		if (mPath[0] < rhs->mPath[0])
+		{
+			return true;
+		}
+
+		return false;
+	}
 
 	bool Pass::compile()
 	{
@@ -81,7 +74,7 @@ namespace Mydx
 
 		HRESULT result = E_INVALIDARG;
 		ID3DBlob* vBlob, * gBlob, * dBlob, * hBlob, * pBlob;
-		ID3DBlob* errBlob;
+		ID3DBlob* errBlob = nullptr;
 
 		ID3D11Device* device = HW::GetDevice();
 
@@ -94,12 +87,12 @@ namespace Mydx
 			string str = string(mEntry) + "VS";
 
 			result = D3DCompileFromFile(A2W(mPath), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, str.c_str(), "vs_5_0", compileFlag, 0, &vBlob, &errBlob);
-		#ifdef _DEBUG
-			if (result != S_OK)
-			{
-				std::cout << (const char*)errBlob->GetBufferPointer() << std::endl;
-			}
-		#endif
+	#ifdef _DEBUG
+		if (result != S_OK && errBlob != nullptr)
+		{
+			std::cout << (const char*)errBlob->GetBufferPointer() << std::endl;
+		}
+	#endif
 
 			assert(result == S_OK);
 
