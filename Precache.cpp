@@ -25,8 +25,9 @@ namespace Mydx
 		cache->mShaderContainer.insert_or_assign(name, pass);
 
 	}
-	Pass* Precache::GetPass(const char* name)
+	Pass* Precache::GetPass(std::string name)
 	{
-		return GetInstance()->mShaderContainer.find(name)->second;
+		Precache* cache = GetInstance();
+		return cache->mShaderContainer[name];
 	}
 }

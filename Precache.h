@@ -9,7 +9,7 @@ namespace Mydx
 	{
 	public:
 		static bool AddPass(Pass* pass);
-		static Pass* GetPass(const char* name);
+		static Pass* GetPass(std::string name);
 
 		static Precache* GetInstance()
 		{
@@ -22,7 +22,7 @@ namespace Mydx
 		}
 
 	private:
-		unordered_map<const char*, Pass*> mShaderContainer;
+		unordered_map<std::string, Pass*> mShaderContainer;
 		static Precache* mInstance;
 	};
 

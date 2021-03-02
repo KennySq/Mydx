@@ -101,6 +101,13 @@ namespace Mydx
 
 			ShaderReflection reflect(vBlob);
 
+			for (unsigned int i = 0; i < reflect.mConstants.size(); i++)
+			{
+				string key = reflect.mConstants[i].Name;
+				
+
+			}
+
 			result = device->CreateInputLayout(reflect.mInputElements.data(),
 											   reflect.mInputElements.size(),
 											   vBlob->GetBufferPointer(),
